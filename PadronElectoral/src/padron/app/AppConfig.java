@@ -1,13 +1,27 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package padron.app;
 
-/**
- *
- * @author betac
- */
-public class AppConfig {
-    
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+public final class AppConfig {
+
+    private AppConfig() {}
+
+    // Rutas (recomendado: carpeta /data en el repo)
+    public static final Path PADRON_PATH = Paths.get("data", "PADRON.txt");
+    public static final Path DISTELEC_PATH = Paths.get("data", "distelec.txt");
+
+    // Puertos
+    public static final int TCP_PORT = 5000;
+    public static final int HTTP_PORT = 8080;
+
+    // Concurrencia
+    public static final int TCP_POOL_SIZE = 20;
+    public static final int HTTP_POOL_SIZE = 20;
+
+    // Parsing TXT (si cambia el separador, se cambia aquí)
+    public static final String TXT_SEPARATOR = "|";
+
+    // Cache (si luego implementan LRU)
+    public static final int PADRON_CACHE_SIZE = 500;
 }

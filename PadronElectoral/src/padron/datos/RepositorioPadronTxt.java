@@ -1,13 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package padron.datos;
 
-/**
- *
- * @author betac
- */
-public class RepositorioPadronTxt {
-    
+import java.nio.file.Path;
+import padron.entidades.Persona;
+import java.util.Optional;
+
+public class RepositorioPadronTxt implements RepositorioPadron {
+
+    public RepositorioPadronTxt(Path path, String sep) {}
+
+    @Override
+    public Optional<Persona> buscarPorCedula(String cedulaNormalizada) {
+        return Optional.empty();
+    }
 }
