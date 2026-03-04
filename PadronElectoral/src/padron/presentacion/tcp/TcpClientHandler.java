@@ -1,13 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package padron.presentacion.tcp;
 
-/**
- *
- * @author betac
- */
-public class TcpClientHandler {
-    
+import java.net.Socket;
+import padron.logica.ServicioPadron;
+
+public class TcpClientHandler implements Runnable {
+
+    public TcpClientHandler(Socket client, ServicioPadron servicio) {
+        // stub
+    }
+
+    @Override
+    public void run() {
+        // stub
+    }
 }

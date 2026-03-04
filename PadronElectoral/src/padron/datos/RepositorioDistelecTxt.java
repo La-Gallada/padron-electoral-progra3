@@ -1,13 +1,18 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package padron.datos;
 
-/**
- *
- * @author betac
- */
-public class RepositorioDistelecTxt {
-    
+import java.nio.file.Path;
+import padron.entidades.Direccion;
+import java.util.Optional;
+
+public class RepositorioDistelecTxt implements RepositorioDistelec {
+
+    public RepositorioDistelecTxt(Path path, String sep) {}
+
+    @Override
+    public void cargar() {}
+
+    @Override
+    public Optional<Direccion> buscarPorCodElec(String codElec) {
+        return Optional.empty();
+    }
 }
