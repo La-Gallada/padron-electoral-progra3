@@ -11,16 +11,6 @@ import padron.presentacion.tcp.TcpServer;
 public final class Main {
 
     public static void main(String[] args) {
-
- java.awt.EventQueue.invokeLater(new Runnable() { /// abrir JFRAME
-            public void run() {
-                new Vista().setVisible(true);
-            }
-        });
-
-    }
-
-        
         try {
             // 1) Datos
             RepositorioDistelec repoDistelec = new RepositorioDistelecTxt(

@@ -1,46 +1,18 @@
-package projectoprogra3;
+package padron.datos;
 
-/**
- *
- * @author wdtai
- */
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.file.Path;
+import padron.entidades.Direccion;
+import java.util.Optional;
 
-public class RepositorioDistelecTxt {
+public class RepositorioDistelecTxt implements RepositorioDistelec {
 
-    private Map<String, Direccion> mapa = new HashMap<>();
+    public RepositorioDistelecTxt(Path path, String sep) {}
 
-    private static final String RUTA =
-    "C:\\Users\\wdtai\\Downloads\\padron_completo\\distelec.txt";
+    @Override
+    public void cargar() {}
 
-    public void cargar() {
-
-        try (BufferedReader br = new BufferedReader(new FileReader(RUTA))) {
-
-            String linea;
-
-            while ((linea = br.readLine()) != null) {
-
-                String[] datos = linea.split(",");
-
-                String codElec = datos[0];
-                String provincia = datos[1];
-                String canton = datos[2];
-                String distrito = datos[3];
-
-                mapa.put(codElec,
-                        new Direccion(provincia, canton, distrito));
-            }
-
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public Direccion obtenerDireccion(String codElec) {
-        return mapa.get(codElec);
+    @Override
+    public Optional<Direccion> buscarPorCodElec(String codElec) {
+        return Optional.empty();
     }
 }
