@@ -1,13 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package padron.dto;
 
-/**
- *
- * @author betac
- */
 public class SolicitudPadron {
-    
+
+    private final String cedula;
+    private final String formato; // "JSON" o "TEXTO"
+
+    public SolicitudPadron(String cedula, String formato) {
+        this.cedula  = cedula;
+        this.formato = formato;
+    }
+
+    public String getCedula()  { return cedula; }
+    public String getFormato() { return formato; }
 }

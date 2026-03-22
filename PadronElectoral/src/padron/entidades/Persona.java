@@ -1,13 +1,25 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package padron.entidades;
 
-/**
- *
- * @author betac
- */
 public class Persona {
-    
+
+    private final String cedula;
+    private final String nombre;
+    private final String primerApellido;
+    private final String segundoApellido;
+    private final String codElec;
+
+    public Persona(String cedula, String nombre, String primerApellido,
+                   String segundoApellido, String codElec) {
+        this.cedula          = cedula;
+        this.nombre          = nombre;
+        this.primerApellido  = primerApellido;
+        this.segundoApellido = segundoApellido;
+        this.codElec         = codElec;
+    }
+
+    public String getCedula()          { return cedula; }
+    public String getNombre()          { return nombre; }
+    public String getPrimerApellido()  { return primerApellido; }
+    public String getSegundoApellido() { return segundoApellido; }
+    public String getCodElec()         { return codElec; }
 }
