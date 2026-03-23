@@ -2,29 +2,32 @@ package padron.dto;
 
 public class RespuestaPadron {
 
-    private final boolean exito;
-    private final PersonaDTO persona;
-    private final DireccionDTO direccion;
-    private final String error;
+    private final boolean       ok;
+    private final PersonaDTO    persona;
+    private final DireccionDTO  direccion;
+    private final ErrorRespuesta error;
 
-    // Constructor para respuesta exitosa
-    public RespuestaPadron(PersonaDTO persona, DireccionDTO direccion) {
-        this.exito     = true;
+    // Constructor privado — usar métodos estáticos
+    private RespuestaPadron(boolean ok, PersonaDTO persona,
+                             DireccionDTO direccion, ErrorRespuesta error) {
+        this.ok        = ok;
         this.persona   = persona;
         this.direccion = direccion;
-        this.error     = null;
-    }
-
-    // Constructor para respuesta de error
-    public RespuestaPadron(String error) {
-        this.exito     = false;
-        this.persona   = null;
-        this.direccion = null;
         this.error     = error;
     }
 
-    public boolean isExito()        { return exito; }
-    public PersonaDTO getPersona()  { return persona; }
-    public DireccionDTO getDireccion() { return direccion; }
-    public String getError()        { return error; }
+    // Respuesta exitosa
+    public static RespuestaPadron ok(PersonaDTO persona, DireccionDTO direccion) {
+        return new RespuestaPadron(true, persona, direccion, null);
+    }
+
+    // Respuesta de error
+    public static RespuestaPadron error(String codigo, String mensaje) {
+        return new RespuestaPadron(false, null, null, new ErrorRespuesta(codigo, mensaje));
+    }
+
+    public boolean        isOk()        { return ok; }
+    public PersonaDTO     getPersona()  { return persona; }
+    public DireccionDTO   getDireccion(){ return direccion; }
+    public ErrorRespuesta getError()    { return error; }
 }

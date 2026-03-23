@@ -3,6 +3,7 @@ package padron.logica;
 import padron.datos.RepositorioDistelec;
 import padron.datos.RepositorioPadron;
 import padron.dto.DireccionDTO;
+import padron.dto.ErrorRespuesta;
 import padron.dto.PersonaDTO;
 import padron.dto.RespuestaPadron;
 import padron.dto.SolicitudPadron;
@@ -13,8 +14,8 @@ import java.util.Optional;
 
 public class ServicioPadron {
 
-    private final RepositorioPadron    repoPadron;
-    private final RepositorioDistelec  repoDistelec;
+    private final RepositorioPadron   repoPadron;
+    private final RepositorioDistelec repoDistelec;
 
     public ServicioPadron(RepositorioPadron repoPadron, RepositorioDistelec repoDistelec) {
         this.repoPadron   = repoPadron;
@@ -30,7 +31,7 @@ public class ServicioPadron {
 
         // 1) Validar que la solicitud no sea nula
         if (solicitud == null) {
-            return new RespuestaPadron("Solicitud inválida");
+            return RespuestaPadron.error("SOLICITUD_INVALIDA", "La solicitud no puede ser nula");
         }
 
         // 2) Normalizar la cédula
@@ -38,7 +39,8 @@ public class ServicioPadron {
 
         // 3) Validar la cédula normalizada
         if (!CedulaNormalizer.esValida(cedulaNormalizada)) {
-            return new RespuestaPadron("Cédula inválida: " + solicitud.getCedula());
+            return RespuestaPadron.error("CEDULA_INVALIDA",
+                    "La cédula no es válida: " + solicitud.getCedula());
         }
 
         // 4) Buscar persona en el padrón
@@ -46,24 +48,28 @@ public class ServicioPadron {
         try {
             personaOpt = repoPadron.buscarPorCedula(cedulaNormalizada);
         } catch (Exception e) {
-            return new RespuestaPadron("Error consultando el padrón: " + e.getMessage());
+            return RespuestaPadron.error("ERROR_PADRON",
+                    "Error consultando el padrón: " + e.getMessage());
         }
 
+        // 5) Si no existe, devolver error
         if (personaOpt.isEmpty()) {
-            return new RespuestaPadron("Cédula no encontrada: " + cedulaNormalizada);
+            return RespuestaPadron.error("CEDULA_NO_ENCONTRADA",
+                    "No se encontró la cédula: " + cedulaNormalizada);
         }
 
         Persona persona = personaOpt.get();
 
-        // 5) Buscar dirección en distelec usando el codElec de la persona
+        // 6) Buscar dirección en distelec usando codElec
         Optional<Direccion> direccionOpt;
         try {
             direccionOpt = repoDistelec.buscarPorCodElec(persona.getCodElec());
         } catch (Exception e) {
-            return new RespuestaPadron("Error consultando distelec: " + e.getMessage());
+            return RespuestaPadron.error("ERROR_DISTELEC",
+                    "Error consultando distelec: " + e.getMessage());
         }
 
-        // 6) Construir DTOs
+        // 7) Construir PersonaDTO
         PersonaDTO personaDTO = new PersonaDTO(
             persona.getCedula(),
             persona.getNombre(),
@@ -72,6 +78,7 @@ public class ServicioPadron {
             persona.getCodElec()
         );
 
+        // 8) Construir DireccionDTO si existe dirección
         DireccionDTO direccionDTO = null;
         if (direccionOpt.isPresent()) {
             Direccion dir = direccionOpt.get();
@@ -83,7 +90,7 @@ public class ServicioPadron {
             );
         }
 
-        // 7) Retornar respuesta exitosa
-        return new RespuestaPadron(personaDTO, direccionDTO);
+        // 9) Devolver respuesta exitosa
+        return RespuestaPadron.ok(personaDTO, direccionDTO);
     }
 }

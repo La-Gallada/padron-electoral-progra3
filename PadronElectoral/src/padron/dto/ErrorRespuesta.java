@@ -1,13 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package padron.dto;
 
-/**
- *
- * @author betac
- */
 public class ErrorRespuesta {
-    
+
+    private final String codigo;
+    private final String mensaje;
+
+    public ErrorRespuesta(String codigo, String mensaje) {
+        this.codigo  = codigo;
+        this.mensaje = mensaje;
+    }
+
+    public String getCodigo()  { return codigo; }
+    public String getMensaje() { return mensaje; }
 }
