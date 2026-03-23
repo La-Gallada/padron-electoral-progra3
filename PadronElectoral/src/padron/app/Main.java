@@ -14,12 +14,12 @@ public final class Main {
         try {
             // 1) Datos
             RepositorioDistelec repoDistelec = new RepositorioDistelecTxt(
-                    AppConfig.DISTELEC_PATH, AppConfig.TXT_SEPARATOR
+                    AppConfig.DISTELEC_PATH, AppConfig.DISTELEC_SEPARATOR
             );
             repoDistelec.cargar(); // carga Map en memoria
 
             RepositorioPadron repoPadron = new RepositorioPadronTxt(
-                    AppConfig.PADRON_PATH, AppConfig.TXT_SEPARATOR
+                    AppConfig.PADRON_PATH, AppConfig.PADRON_SEPARATOR
             );
 
             // 2) Lógica (única para TCP y HTTP)

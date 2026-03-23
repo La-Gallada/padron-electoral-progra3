@@ -1,15 +1,55 @@
 package padron.datos;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import padron.entidades.Persona;
 import java.util.Optional;
+import padron.entidades.Persona;
 
 public class RepositorioPadronTxt implements RepositorioPadron {
 
-    public RepositorioPadronTxt(Path path, String sep) {}
+    private final Path path;
+    private final String sep;
+
+    public RepositorioPadronTxt(Path path, String sep) {
+        this.path = path;
+        this.sep = sep;
+    }
 
     @Override
     public Optional<Persona> buscarPorCedula(String cedulaNormalizada) {
+
+        try (BufferedReader br = Files.newBufferedReader(path, StandardCharsets.ISO_8859_1)) {
+
+            String linea;
+            while ((linea = br.readLine()) != null) {
+
+                String[] campos = linea.split("\\" + sep, -1);
+
+                // Formato real:
+                // [0]=cedula, [1]=codElec, [5]=nombre, [6]=primerApellido, [7]=segundoApellido
+                if (campos.length < 8) continue;
+
+                String cedulaArchivo = campos[0].trim();
+
+                if (cedulaArchivo.equals(cedulaNormalizada)) {
+                    Persona persona = new Persona(
+                        cedulaArchivo,
+                        campos[5].trim(),
+                        campos[6].trim(),
+                        campos[7].trim(),
+                        campos[1].trim()
+                    );
+                    return Optional.of(persona);
+                }
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException("Error leyendo padrón: " + e.getMessage(), e);
+        }
+
         return Optional.empty();
     }
 }
