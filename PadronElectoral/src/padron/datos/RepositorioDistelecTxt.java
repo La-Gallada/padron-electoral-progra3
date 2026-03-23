@@ -26,7 +26,7 @@ public class RepositorioDistelecTxt implements RepositorioDistelec {
     @Override
     public void cargar() {
 
-        try (BufferedReader br = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+        try (BufferedReader br = Files.newBufferedReader(path, StandardCharsets.ISO_8859_1)) {
 
             String linea;
             while ((linea = br.readLine()) != null) {
