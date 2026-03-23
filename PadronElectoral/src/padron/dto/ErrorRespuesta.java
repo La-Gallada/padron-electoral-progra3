@@ -1,6 +1,7 @@
 package padron.dto;
 
 public class ErrorRespuesta {
+
     private final String codigo;
     private final String mensaje;
 

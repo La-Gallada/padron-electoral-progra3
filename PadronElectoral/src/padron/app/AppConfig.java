@@ -19,8 +19,9 @@ public final class AppConfig {
     public static final int TCP_POOL_SIZE = 20;
     public static final int HTTP_POOL_SIZE = 20;
 
-    // Parsing TXT (si cambia el separador, se cambia aquí)
-    public static final String TXT_SEPARATOR = "|";
+    // Parsing TXT
+    public static final String PADRON_SEPARATOR = ",";
+    public static final String DISTELEC_SEPARATOR = ",";
 
     // Cache (si luego implementan LRU)
     public static final int PADRON_CACHE_SIZE = 500;

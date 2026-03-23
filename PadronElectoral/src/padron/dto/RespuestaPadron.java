@@ -1,10 +1,11 @@
 package padron.dto;
 
 public class RespuestaPadron {
+
     private final boolean ok;
-    private final PersonaDTO persona;      // null si error
-    private final DireccionDTO direccion;  // null si error
-    private final ErrorRespuesta error;    // null si ok
+    private final PersonaDTO persona;
+    private final DireccionDTO direccion;
+    private final ErrorRespuesta error;
 
     private RespuestaPadron(boolean ok, PersonaDTO persona, DireccionDTO direccion, ErrorRespuesta error) {
         this.ok = ok;
