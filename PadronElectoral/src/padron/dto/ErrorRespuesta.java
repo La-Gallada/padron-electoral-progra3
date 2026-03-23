@@ -6,10 +6,10 @@ public class ErrorRespuesta {
     private final String mensaje;
 
     public ErrorRespuesta(String codigo, String mensaje) {
-        this.codigo  = codigo;
+        this.codigo = codigo;
         this.mensaje = mensaje;
     }
 
-    public String getCodigo()  { return codigo; }
+    public String getCodigo() { return codigo; }
     public String getMensaje() { return mensaje; }
 }
