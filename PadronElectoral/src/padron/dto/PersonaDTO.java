@@ -1,13 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package padron.dto;
 
-/**
- *
- * @author betac
- */
 public class PersonaDTO {
-    
+    private final String cedula;
+    private final String nombreCompleto;
+
+    public PersonaDTO(String cedula, String nombreCompleto) {
+        this.cedula = cedula;
+        this.nombreCompleto = nombreCompleto;
+    }
+
+    public String getCedula() { return cedula; }
+    public String getNombreCompleto() { return nombreCompleto; }
 }
