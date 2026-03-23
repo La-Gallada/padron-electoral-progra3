@@ -1,13 +1,29 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package padron.dto;
 
-/**
- *
- * @author betac
- */
 public class RespuestaPadron {
-    
+
+    private final boolean ok;
+    private final PersonaDTO persona;
+    private final DireccionDTO direccion;
+    private final ErrorRespuesta error;
+
+    private RespuestaPadron(boolean ok, PersonaDTO persona, DireccionDTO direccion, ErrorRespuesta error) {
+        this.ok = ok;
+        this.persona = persona;
+        this.direccion = direccion;
+        this.error = error;
+    }
+
+    public static RespuestaPadron ok(PersonaDTO persona, DireccionDTO direccion) {
+        return new RespuestaPadron(true, persona, direccion, null);
+    }
+
+    public static RespuestaPadron error(String codigo, String mensaje) {
+        return new RespuestaPadron(false, null, null, new ErrorRespuesta(codigo, mensaje));
+    }
+
+    public boolean isOk() { return ok; }
+    public PersonaDTO getPersona() { return persona; }
+    public DireccionDTO getDireccion() { return direccion; }
+    public ErrorRespuesta getError() { return error; }
 }
