@@ -337,7 +337,7 @@
 119030,SAN JOSE,PEREZ ZELEDON,SANTA TERESA                                      
 119031,SAN JOSE,PEREZ ZELEDON,PEJIBAYE                                          
 119032,SAN JOSE,PEREZ ZELEDON,SANTO TOMAS                                       
-119033,SAN JOSE,PEREZ ZELEDON,PEÑAS BLANCAS                                     
+119033,SAN JOSE,PEREZ ZELEDON,PEï¿½AS BLANCAS                                     
 119034,SAN JOSE,PEREZ ZELEDON,AGUILA ABAJO                                      
 119035,SAN JOSE,PEREZ ZELEDON,SAN PABLO                                         
 119036,SAN JOSE,PEREZ ZELEDON,ZAPOTE                                            
@@ -516,7 +516,7 @@
 201055,ALAJUELA,CENTRAL,ROSALES                                                 
 201056,ALAJUELA,CENTRAL,CALIFORNIA                                              
 201057,ALAJUELA,CENTRAL,LAS PILAS                                               
-201058,ALAJUELA,CENTRAL,UAI. REYNALDO VILLALOBOS ZUÑIGA                         
+201058,ALAJUELA,CENTRAL,UAI. REYNALDO VILLALOBOS ZUï¿½IGA                         
 201059,ALAJUELA,CENTRAL,CAI. LUIS PAULINO MORA MORA                             
 201060,ALAJUELA,CENTRAL,CAI. JORGE ART. M. C (AMBITOS A,B)                      
 201062,ALAJUELA,CENTRAL,CAI.JORGE ART. MONT. CAS. (AMB. C)                      
@@ -528,7 +528,7 @@
 201068,ALAJUELA,CENTRAL,EL ARROYO                                               
 201069,ALAJUELA,CENTRAL,EL CARMEN                                               
 201070,ALAJUELA,CENTRAL,RINCON CHIQUITO                                         
-201071,ALAJUELA,CENTRAL,CAE. OFELIA VINCEZI PEÑARANDA                           
+201071,ALAJUELA,CENTRAL,CAE. OFELIA VINCEZI PEï¿½ARANDA                           
 201072,ALAJUELA,CENTRAL,EL PARAISO                                              
 201073,ALAJUELA,CENTRAL,RINCON DE HERRERA                                       
 201074,ALAJUELA,CENTRAL,CAI.JORGE ART. MONT. CAS. (AMB. E)                      
@@ -558,7 +558,7 @@
 202021,ALAJUELA,SAN RAMON,ALTO VILLEGAS                                         
 202022,ALAJUELA,SAN RAMON,CONCEPCION                                            
 202023,ALAJUELA,SAN RAMON,SAN ANTONIO DE ZAPOTAL                                
-202024,ALAJUELA,SAN RAMON,SAN ISIDRO DE PEÑAS BLANCAS                           
+202024,ALAJUELA,SAN RAMON,SAN ISIDRO DE PEï¿½AS BLANCAS                           
 202025,ALAJUELA,SAN RAMON,CARRERA BUENA                                         
 202026,ALAJUELA,SAN RAMON,BOLIVAR (ESPERANZA)                                   
 202027,ALAJUELA,SAN RAMON,LA ESPERANZA                                          
@@ -571,7 +571,7 @@
 202035,ALAJUELA,SAN RAMON,SECTOR LOS ANGELES                                    
 202036,ALAJUELA,SAN RAMON,CATARATA                                              
 202037,ALAJUELA,SAN RAMON,VALLE AZUL                                            
-202038,ALAJUELA,SAN RAMON,BAJO ZUÑIGA                                           
+202038,ALAJUELA,SAN RAMON,BAJO ZUï¿½IGA                                           
 202039,ALAJUELA,SAN RAMON,SOCORRO                                               
 202040,ALAJUELA,SAN RAMON,LA GUARIA                                             
 202041,ALAJUELA,SAN RAMON,ANGOSTURA                                             
@@ -594,7 +594,7 @@
 203009,ALAJUELA,GRECIA,RINCON DE ARIAS                                          
 203012,ALAJUELA,GRECIA,LA ARENA (PARTE NORTE)                                   
 203014,ALAJUELA,GRECIA,CALLE RODRIGUEZ                                          
-203015,ALAJUELA,GRECIA,CATALUÑA                                                 
+203015,ALAJUELA,GRECIA,CATALUï¿½A                                                 
 203017,ALAJUELA,GRECIA,PUENTE DE PIEDRA                                         
 203018,ALAJUELA,GRECIA,RINCON DE SALAS                                          
 203019,ALAJUELA,GRECIA,LOS ANGELES DE BOLIVAR                                   
@@ -657,7 +657,7 @@
 206012,ALAJUELA,NARANJO,CIRRI SUR                                               
 206013,ALAJUELA,NARANJO,LLANO BONITO O CIRRI NORTE                              
 206014,ALAJUELA,NARANJO,SAN ROQUE                                               
-206015,ALAJUELA,NARANJO,CAÑUELA ARRIBA                                          
+206015,ALAJUELA,NARANJO,CAï¿½UELA ARRIBA                                          
 206016,ALAJUELA,NARANJO,SAN JERONIMO                                            
 206017,ALAJUELA,NARANJO,LOS ROBLES                                              
 206018,ALAJUELA,NARANJO,SAN FRANCISCO (VACA MUERTA)                             
@@ -789,7 +789,7 @@
 210093,ALAJUELA,SAN CARLOS,CAI. NELSON MANDELA                                  
 210094,ALAJUELA,SAN CARLOS,HLE. SAN VICENTE DE PAUL                             
 210095,ALAJUELA,SAN CARLOS,ABUNDANCIA                                           
-210096,ALAJUELA,SAN CARLOS,SAN JOSE DE LA MONTAÑA                               
+210096,ALAJUELA,SAN CARLOS,SAN JOSE DE LA MONTAï¿½A                               
 210097,ALAJUELA,SAN CARLOS,SAN PABLO                                            
 210098,ALAJUELA,SAN CARLOS,CONCEPCION                                           
 210099,ALAJUELA,SAN CARLOS,EL CORTE (SANTA ROSA)                                
@@ -849,7 +849,7 @@
 213026,ALAJUELA,UPALA,VILLANUEVA                                                
 213027,ALAJUELA,UPALA,PORVENIR                                                  
 213028,ALAJUELA,UPALA,NAZARETH                                                  
-213029,ALAJUELA,UPALA,MORENO CAÑAS                                              
+213029,ALAJUELA,UPALA,MORENO CAï¿½AS                                              
 213030,ALAJUELA,UPALA,COLONIA BLANCA                                            
 213031,ALAJUELA,UPALA,LLANO AZUL                                                
 213032,ALAJUELA,UPALA,SAN RAFAEL O CHIMURRIA ABAJO                              
@@ -866,7 +866,7 @@
 213043,ALAJUELA,UPALA,HIGUERON (PARTE SUR)                                      
 214001,ALAJUELA,LOS CHILES,LOS CHILES                                           
 214002,ALAJUELA,LOS CHILES,ARCO IRIS                                            
-214003,ALAJUELA,LOS CHILES,CAÑO NEGRO                                           
+214003,ALAJUELA,LOS CHILES,CAï¿½O NEGRO                                           
 214004,ALAJUELA,LOS CHILES,SAN JOSE DEL AMPARO                                  
 214005,ALAJUELA,LOS CHILES,PORVENIR DE SAN JORGE                                
 214006,ALAJUELA,LOS CHILES,MEDIO QUESO                                          
@@ -910,7 +910,7 @@
 216007,ALAJUELA,RIO CUARTO,SANTA ISABEL                                         
 216008,ALAJUELA,RIO CUARTO,LA VICTORIA  (PARTE SUR)                             
 216009,ALAJUELA,RIO CUARTO,SAN VICENTE                                          
-216010,ALAJUELA,RIO CUARTO,LA ESPAÑOLITA                                        
+216010,ALAJUELA,RIO CUARTO,LA ESPAï¿½OLITA                                        
 216011,ALAJUELA,RIO CUARTO,PATA DE GALLO (LOS ANGELES SUR)                      
 301001,CARTAGO,CENTRAL,OCCIDENTAL                                               
 301002,CARTAGO,CENTRAL,ORIENTAL                                                 
@@ -987,7 +987,7 @@
 303017,CARTAGO,LA UNION,LINDA VISTA                                             
 303018,CARTAGO,LA UNION,SAN FRANCISCO                                           
 303019,CARTAGO,LA UNION,LA CIMA                                                 
-304001,CARTAGO,JIMENEZ,JUAN VIÑAS                                               
+304001,CARTAGO,JIMENEZ,JUAN VIï¿½AS                                               
 304002,CARTAGO,JIMENEZ,ALTO VICTORIA                                            
 304004,CARTAGO,JIMENEZ,SANTA MARTA                                              
 304005,CARTAGO,JIMENEZ,EL NARANJO                                               
@@ -1051,11 +1051,11 @@
 305053,CARTAGO,TURRIALBA,SAUCE                                                  
 305055,CARTAGO,TURRIALBA,JICOTEA                                                
 305056,CARTAGO,TURRIALBA,SAN RAFAEL                                             
-305057,CARTAGO,TURRIALBA,SIMIRIÑAC (JACUY)                                      
+305057,CARTAGO,TURRIALBA,SIMIRIï¿½AC (JACUY)                                      
 305058,CARTAGO,TURRIALBA,ALTO PACUARE ARRIBA (DUCLAC)                           
 305059,CARTAGO,TURRIALBA,JAKI (CAPILLA DOS CHIRRIPO ARRIBA)                     
-305060,CARTAGO,TURRIALBA,BOLORI ÑAC (CAPILLA UNO)                               
-305061,CARTAGO,TURRIALBA,NIMARI-ÑAC (RIO PEJE)                                  
+305060,CARTAGO,TURRIALBA,BOLORI ï¿½AC (CAPILLA UNO)                               
+305061,CARTAGO,TURRIALBA,NIMARI-ï¿½AC (RIO PEJE)                                  
 305062,CARTAGO,TURRIALBA,NAMALDI                                                
 305063,CARTAGO,TURRIALBA,TSIPIRI (QUEBRADA PLATANILLO)                          
 305064,CARTAGO,TURRIALBA,AZUL                                                   
@@ -1101,7 +1101,7 @@
 308006,CARTAGO,EL GUARCO,BARRIO NUEVO                                           
 308007,CARTAGO,EL GUARCO,TABLON                                                 
 308008,CARTAGO,EL GUARCO,PATIO DE AGUA                                          
-308010,CARTAGO,EL GUARCO,CAÑON (PARTE NORTE)                                    
+308010,CARTAGO,EL GUARCO,CAï¿½ON (PARTE NORTE)                                    
 308011,CARTAGO,EL GUARCO,PURIRES (PARTE OESTE)                                  
 308012,CARTAGO,EL GUARCO,CARAGRAL                                               
 308013,CARTAGO,EL GUARCO,LA CANGREJA                                            
@@ -1124,7 +1124,7 @@
 401018,HEREDIA,CENTRAL,LA AURORA (PARTE NORTE)                                  
 402001,HEREDIA,BARVA,BARVA                                                      
 402002,HEREDIA,BARVA,SAN PEDRO                                                  
-402003,HEREDIA,BARVA,SAN JOSE DE LA MONTAÑA                                     
+402003,HEREDIA,BARVA,SAN JOSE DE LA MONTAï¿½A                                     
 402004,HEREDIA,BARVA,SAN PABLO                                                  
 402005,HEREDIA,BARVA,SAN ROQUE                                                  
 402006,HEREDIA,BARVA,SANTA LUCIA                                                
@@ -1170,7 +1170,7 @@
 406005,HEREDIA,SAN ISIDRO,SANTA ELENA                                           
 406006,HEREDIA,SAN ISIDRO,SANTA CECILIA (ALHAJAS)                               
 406007,HEREDIA,SAN ISIDRO,CENTRO DE FORMACION JUVENIL ZURQUI                    
-406008,HEREDIA,SAN ISIDRO,HLE. SEÑORA DE LOS ANGELES                            
+406008,HEREDIA,SAN ISIDRO,HLE. SEï¿½ORA DE LOS ANGELES                            
 406009,HEREDIA,SAN ISIDRO,QUEBRADAS O LOURDES (PARTE NORTE)                     
 407001,HEREDIA,BELEN,SAN ANTONIO                                                
 407002,HEREDIA,BELEN,LA RIBERA                                                  
@@ -1230,10 +1230,10 @@
 410046,HEREDIA,SARAPIQUI,LAS PALMITAS                                           
 501001,GUANACASTE,LIBERIA,LIBERIA                                               
 501002,GUANACASTE,LIBERIA,GUARDIA                                               
-501003,GUANACASTE,LIBERIA,CAÑAS DULCES                                          
+501003,GUANACASTE,LIBERIA,CAï¿½AS DULCES                                          
 501004,GUANACASTE,LIBERIA,QUEBRADA GRANDE O GARCIA FLAMENCO                     
 501005,GUANACASTE,LIBERIA,CURUBANDE                                             
-501006,GUANACASTE,LIBERIA,BUENAVISTA DE CAÑAS DULCES                            
+501006,GUANACASTE,LIBERIA,BUENAVISTA DE CAï¿½AS DULCES                            
 501007,GUANACASTE,LIBERIA,IRIGARAY                                              
 501008,GUANACASTE,LIBERIA,LAS LILAS                                             
 501009,GUANACASTE,LIBERIA,CERECEDA (GUADALUPE)                                  
@@ -1284,12 +1284,12 @@
 502036,GUANACASTE,NICOYA,POZO DE AGUA                                           
 502037,GUANACASTE,NICOYA,BOCAS DE NOSARA                                        
 502039,GUANACASTE,NICOYA,EL ROBLAR                                              
-502040,GUANACASTE,NICOYA,EL CAÑAL                                               
+502040,GUANACASTE,NICOYA,EL CAï¿½AL                                               
 502041,GUANACASTE,NICOYA,NAMBI                                                  
 502042,GUANACASTE,NICOYA,CUAJINIQUIL                                            
 502043,GUANACASTE,NICOYA,FLORIDA                                                
 502044,GUANACASTE,NICOYA,MORACIA                                                
-502045,GUANACASTE,NICOYA,RIO MONTAÑA                                            
+502045,GUANACASTE,NICOYA,RIO MONTAï¿½A                                            
 502047,GUANACASTE,NICOYA,TERCIOPELO                                             
 502049,GUANACASTE,NICOYA,TALOLINGA                                              
 502051,GUANACASTE,NICOYA,CURIME                                                 
@@ -1315,10 +1315,10 @@
 502079,GUANACASTE,NICOYA,EL FLOR (ROJAS)                                        
 502080,GUANACASTE,NICOYA,MATAMBUGUITO                                           
 502081,GUANACASTE,NICOYA,CASITAS                                                
-502082,GUANACASTE,NICOYA,GARCIMUÑOZ                                             
+502082,GUANACASTE,NICOYA,GARCIMUï¿½OZ                                             
 502083,GUANACASTE,NICOYA,ACOYAPA                                                
 502084,GUANACASTE,NICOYA,HLE. SAN BLAS                                          
-502085,GUANACASTE,NICOYA,MONTAÑITA                                              
+502085,GUANACASTE,NICOYA,MONTAï¿½ITA                                              
 502086,GUANACASTE,NICOYA,RIO GRANDE                                             
 503001,GUANACASTE,SANTA CRUZ,SANTA CRUZ                                         
 503002,GUANACASTE,SANTA CRUZ,ARADO                                              
@@ -1347,7 +1347,7 @@
 503025,GUANACASTE,SANTA CRUZ,SAN JUANILLO                                       
 503027,GUANACASTE,SANTA CRUZ,POTRERO                                            
 503028,GUANACASTE,SANTA CRUZ,OSTIONAL                                           
-503029,GUANACASTE,SANTA CRUZ,SAN JOSE DE LA MONTAÑA                             
+503029,GUANACASTE,SANTA CRUZ,SAN JOSE DE LA MONTAï¿½A                             
 503030,GUANACASTE,SANTA CRUZ,EL SOCORRO                                         
 503031,GUANACASTE,SANTA CRUZ,PALMARES                                           
 503032,GUANACASTE,SANTA CRUZ,LORENA                                             
@@ -1362,7 +1362,7 @@
 503042,GUANACASTE,SANTA CRUZ,TALOLINGUITA                                       
 503043,GUANACASTE,SANTA CRUZ,SAN PEDRO                                          
 503044,GUANACASTE,SANTA CRUZ,GUAITIL                                            
-503045,GUANACASTE,SANTA CRUZ,HLE. NUESTRA SEÑORA DEL ROSARIO                    
+503045,GUANACASTE,SANTA CRUZ,HLE. NUESTRA SEï¿½ORA DEL ROSARIO                    
 503046,GUANACASTE,SANTA CRUZ,CHIRCO                                             
 504001,GUANACASTE,BAGACES,BAGACES                                               
 504002,GUANACASTE,BAGACES,MONTANO                                               
@@ -1392,7 +1392,7 @@
 505009,GUANACASTE,CARRILLO,SANTO DOMINGO                                        
 505010,GUANACASTE,CARRILLO,LOS PLANES                                           
 505011,GUANACASTE,CARRILLO,EL COCO                                              
-505012,GUANACASTE,CARRILLO,RIO CAÑAS NUEVO                                      
+505012,GUANACASTE,CARRILLO,RIO CAï¿½AS NUEVO                                      
 505013,GUANACASTE,CARRILLO,LA GUINEA                                            
 505014,GUANACASTE,CARRILLO,CORRALILLO                                           
 505015,GUANACASTE,CARRILLO,PANAMA O CACIQUE                                     
@@ -1403,24 +1403,24 @@
 505020,GUANACASTE,CARRILLO,LIBERTAD (HUACAS)                                    
 505021,GUANACASTE,CARRILLO,PASO TEMPISQUE                                       
 505022,GUANACASTE,CARRILLO,ALTOS DEL ROBLE                                      
-506001,GUANACASTE,CAÑAS,CAÑAS                                                   
-506002,GUANACASTE,CAÑAS,HIGUERON ABAJO                                          
-506003,GUANACASTE,CAÑAS,PALMIRA                                                 
-506004,GUANACASTE,CAÑAS,BEBEDERO (SUR DEL RIO)                                  
-506005,GUANACASTE,CAÑAS,POROZAL                                                 
-506006,GUANACASTE,CAÑAS,NUEVA GUATEMALA                                         
-506007,GUANACASTE,CAÑAS,SAN MIGUEL O CUATRO ESQUINAS                            
-506008,GUANACASTE,CAÑAS,NISPERO (PUERTO ALEGRE)                                 
-506009,GUANACASTE,CAÑAS,BUENOS AIRES LA GOTERA(ALTO LAJAS)                      
-506010,GUANACASTE,CAÑAS,HOTEL                                                   
-506011,GUANACASTE,CAÑAS,SANDILLAL (SANDIAL)                                     
-506012,GUANACASTE,CAÑAS,EL VERGEL                                               
-506013,GUANACASTE,CAÑAS,SAN JUAN                                                
-506014,GUANACASTE,CAÑAS,JABILLA ABAJO                                           
-506015,GUANACASTE,CAÑAS,SAN MARTIN                                              
-506016,GUANACASTE,CAÑAS,LAS PALMAS                                              
-506017,GUANACASTE,CAÑAS,HLE.  MARY BLANCO                                       
-506018,GUANACASTE,CAÑAS,URB. LAS CAÑAS                                          
+506001,GUANACASTE,CAï¿½AS,CAï¿½AS                                                   
+506002,GUANACASTE,CAï¿½AS,HIGUERON ABAJO                                          
+506003,GUANACASTE,CAï¿½AS,PALMIRA                                                 
+506004,GUANACASTE,CAï¿½AS,BEBEDERO (SUR DEL RIO)                                  
+506005,GUANACASTE,CAï¿½AS,POROZAL                                                 
+506006,GUANACASTE,CAï¿½AS,NUEVA GUATEMALA                                         
+506007,GUANACASTE,CAï¿½AS,SAN MIGUEL O CUATRO ESQUINAS                            
+506008,GUANACASTE,CAï¿½AS,NISPERO (PUERTO ALEGRE)                                 
+506009,GUANACASTE,CAï¿½AS,BUENOS AIRES LA GOTERA(ALTO LAJAS)                      
+506010,GUANACASTE,CAï¿½AS,HOTEL                                                   
+506011,GUANACASTE,CAï¿½AS,SANDILLAL (SANDIAL)                                     
+506012,GUANACASTE,CAï¿½AS,EL VERGEL                                               
+506013,GUANACASTE,CAï¿½AS,SAN JUAN                                                
+506014,GUANACASTE,CAï¿½AS,JABILLA ABAJO                                           
+506015,GUANACASTE,CAï¿½AS,SAN MARTIN                                              
+506016,GUANACASTE,CAï¿½AS,LAS PALMAS                                              
+506017,GUANACASTE,CAï¿½AS,HLE.  MARY BLANCO                                       
+506018,GUANACASTE,CAï¿½AS,URB. LAS CAï¿½AS                                          
 507001,GUANACASTE,ABANGARES,LAS JUNTAS                                          
 507002,GUANACASTE,ABANGARES,SANTA LUCIA                                         
 507003,GUANACASTE,ABANGARES,LA SIERRA (LAS MINAS)                               
@@ -1440,17 +1440,17 @@
 507017,GUANACASTE,ABANGARES,MATAPALO                                            
 507018,GUANACASTE,ABANGARES,BARRIO JESUS                                        
 507019,GUANACASTE,ABANGARES,RANCHO ANIA O LOURDES (PN)                          
-507020,GUANACASTE,ABANGARES,CAÑITAS                                             
-507021,GUANACASTE,ABANGARES,COYOLITO DE ABANGARES O LA PEÑA                     
+507020,GUANACASTE,ABANGARES,CAï¿½ITAS                                             
+507021,GUANACASTE,ABANGARES,COYOLITO DE ABANGARES O LA PEï¿½A                     
 507022,GUANACASTE,ABANGARES,TORNOS                                              
 507023,GUANACASTE,ABANGARES,HLE. SAN JORGE                                      
 507024,GUANACASTE,ABANGARES,RAIZAL                                              
 507025,GUANACASTE,ABANGARES,LA CONCHA (CONCEPCION)                              
-507026,GUANACASTE,ABANGARES,PEÑAS BLANCAS                                       
+507026,GUANACASTE,ABANGARES,PEï¿½AS BLANCAS                                       
 508001,GUANACASTE,TILARAN,TILARAN                                               
 508002,GUANACASTE,TILARAN,QUEBRADA GRANDE                                       
 508003,GUANACASTE,TILARAN,SAN RAMON                                             
-508004,GUANACASTE,TILARAN,CABECERAS DE CAÑAS                                    
+508004,GUANACASTE,TILARAN,CABECERAS DE CAï¿½AS                                    
 508005,GUANACASTE,TILARAN,TRONADORA                                             
 508006,GUANACASTE,TILARAN,AGUACATE (PARTE OESTE)                                
 508007,GUANACASTE,TILARAN,LOS ANGELES (SANTA ROSA)                              
@@ -1538,7 +1538,7 @@
 601007,PUNTARENAS,CENTRAL,SARMIENTO                                             
 601008,PUNTARENAS,CENTRAL,LAGARTO SUR                                           
 601009,PUNTARENAS,CENTRAL,LEPANTO                                               
-601010,PUNTARENAS,CENTRAL,MONTAÑA GRANDE                                        
+601010,PUNTARENAS,CENTRAL,MONTAï¿½A GRANDE                                        
 601011,PUNTARENAS,CENTRAL,JICARAL                                               
 601012,PUNTARENAS,CENTRAL,PAQUERA                                               
 601013,PUNTARENAS,CENTRAL,TAMBOR                                                
@@ -1625,7 +1625,7 @@
 602005,PUNTARENAS,ESPARZA,JUANILAMA                                             
 602006,PUNTARENAS,ESPARZA,SALINAS                                               
 602007,PUNTARENAS,ESPARZA,MACACONA                                              
-602008,PUNTARENAS,ESPARZA,PEÑA BLANCA                                           
+602008,PUNTARENAS,ESPARZA,PEï¿½A BLANCA                                           
 602009,PUNTARENAS,ESPARZA,MESETAS ABAJO                                         
 602010,PUNTARENAS,ESPARZA,SAN RAFAEL                                            
 602011,PUNTARENAS,ESPARZA,GUADALUPE O MARATON                                   
@@ -1633,7 +1633,7 @@
 602013,PUNTARENAS,ESPARZA,MOJON                                                 
 602014,PUNTARENAS,ESPARZA,SAN JERONIMO                                          
 602015,PUNTARENAS,ESPARZA,CERRILLOS                                             
-602016,PUNTARENAS,ESPARZA,MARAÑONAL (PARTE OESTE)                               
+602016,PUNTARENAS,ESPARZA,MARAï¿½ONAL (PARTE OESTE)                               
 602017,PUNTARENAS,ESPARZA,PARAISO O BRUSELAS                                    
 602018,PUNTARENAS,ESPARZA,HLE. CARLOS VENEGAS                                   
 602019,PUNTARENAS,ESPARZA,TIVIVES                                               
@@ -1684,10 +1684,10 @@
 603046,PUNTARENAS,BUENOS AIRES,COLORADO                                         
 603047,PUNTARENAS,BUENOS AIRES,EL CARMEN                                        
 603048,PUNTARENAS,BUENOS AIRES,CONVENTO                                         
-603049,PUNTARENAS,BUENOS AIRES,CAÑAS                                            
+603049,PUNTARENAS,BUENOS AIRES,CAï¿½AS                                            
 603050,PUNTARENAS,BUENOS AIRES,SAN CARLOS                                       
 603051,PUNTARENAS,BUENOS AIRES,SHAMBA                                           
-603052,PUNTARENAS,BUENOS AIRES,CAÑO BRAVO                                       
+603052,PUNTARENAS,BUENOS AIRES,CAï¿½O BRAVO                                       
 603053,PUNTARENAS,BUENOS AIRES,SANTA CRUZ                                       
 603054,PUNTARENAS,BUENOS AIRES,PALMITAL                                         
 603055,PUNTARENAS,BUENOS AIRES,HLE. BUENOS AIRES                                
@@ -1733,7 +1733,7 @@
 605030,PUNTARENAS,OSA,JALACA (PARTE SUR)                                        
 605032,PUNTARENAS,OSA,SINAI                                                     
 605033,PUNTARENAS,OSA,RANCHO QUEMADO O DELICIAS                                 
-605034,PUNTARENAS,OSA,CAÑABLANCAL                                               
+605034,PUNTARENAS,OSA,CAï¿½ABLANCAL                                               
 605035,PUNTARENAS,OSA,EL PROGRESO                                               
 605036,PUNTARENAS,OSA,FINCA GUANACASTE (PARTE OESTE)                            
 605037,PUNTARENAS,OSA,HLE. PALMAR SUR                                           
@@ -1765,7 +1765,7 @@
 606037,PUNTARENAS,QUEPOS,PORTALON                                               
 606038,PUNTARENAS,QUEPOS,HLE. QUEPOS                                            
 607001,PUNTARENAS,GOLFITO,GOLFITO                                               
-607005,PUNTARENAS,GOLFITO,VILLA BRICEÑO (KM 37)                                 
+607005,PUNTARENAS,GOLFITO,VILLA BRICEï¿½O (KM 37)                                 
 607006,PUNTARENAS,GOLFITO,CONTE DE PAVON                                        
 607007,PUNTARENAS,GOLFITO,FLORIDA (AGUADA)                                      
 607008,PUNTARENAS,GOLFITO,ZANCUDO (PUERTO NUEVO)                                
@@ -1779,14 +1779,14 @@
 607017,PUNTARENAS,GOLFITO,VALLE DE LOS CEDROS O SAN MIGUEL                      
 607019,PUNTARENAS,GOLFITO,KILOMETRO 16                                          
 607020,PUNTARENAS,GOLFITO,BAHIA DE PAVON (COCAL AMARILLO)                       
-607021,PUNTARENAS,GOLFITO,LA PEÑA DE BURICA                                     
+607021,PUNTARENAS,GOLFITO,LA PEï¿½A DE BURICA                                     
 607023,PUNTARENAS,GOLFITO,CARACOL NORTE (PARTE)                                 
 607024,PUNTARENAS,GOLFITO,GUAYMI DE BURICA                                      
 607025,PUNTARENAS,GOLFITO,ALTO CONTE (MOLO DUBTDO)                              
 607026,PUNTARENAS,GOLFITO,VIQUILLAS                                             
 607027,PUNTARENAS,GOLFITO,PROGRESO DE CONTEBURICA                               
 607028,PUNTARENAS,GOLFITO,CACAO                                                 
-607029,PUNTARENAS,GOLFITO,RESIDENCIAL UREÑA                                     
+607029,PUNTARENAS,GOLFITO,RESIDENCIAL UREï¿½A                                     
 607030,PUNTARENAS,GOLFITO,ESCUADRA                                              
 607031,PUNTARENAS,GOLFITO,LAGARTO (LA LUCHA)                                    
 607032,PUNTARENAS,GOLFITO,KILOMETRO 20                                          
@@ -1808,7 +1808,7 @@
 608009,PUNTARENAS,COTO BRUS,LA UNION DE LIMONCITO                               
 608010,PUNTARENAS,COTO BRUS,SAN RAFAEL DE LIMONCITO                             
 608011,PUNTARENAS,COTO BRUS,SABANILLA                                           
-608012,PUNTARENAS,COTO BRUS,CAÑAS GORDAS                                        
+608012,PUNTARENAS,COTO BRUS,CAï¿½AS GORDAS                                        
 608013,PUNTARENAS,COTO BRUS,COPAL                                               
 608014,PUNTARENAS,COTO BRUS,SAN FRANCISCO DE AGUA BUENA                         
 608015,PUNTARENAS,COTO BRUS,EL VALLE                                            
@@ -1870,14 +1870,14 @@
 609028,PUNTARENAS,PARRITA,CARMEN (PARTE SUR)                                    
 609029,PUNTARENAS,PARRITA,PLAYA ISLA PALO SECO                                  
 609030,PUNTARENAS,PARRITA,HLE. PARRITA                                          
-609031,PUNTARENAS,PARRITA,LOS SUEÑOS                                            
+609031,PUNTARENAS,PARRITA,LOS SUEï¿½OS                                            
 610001,PUNTARENAS,CORREDORES,NEILY                                              
 610002,PUNTARENAS,CORREDORES,CAMPO DOS Y MEDIO (PARTE SUR)                      
 610003,PUNTARENAS,CORREDORES,BAJO LOS INDIOS                                    
 610004,PUNTARENAS,CORREDORES,COTO CUARENTA Y DOS                                
 610005,PUNTARENAS,CORREDORES,COTO CUARENTA Y SIETE                              
 610006,PUNTARENAS,CORREDORES,ABROJO NORTE(VEGAS ABRO N)                         
-610007,PUNTARENAS,CORREDORES,CAMPIÑA                                            
+610007,PUNTARENAS,CORREDORES,CAMPIï¿½A                                            
 610008,PUNTARENAS,CORREDORES,LA CUESTA                                          
 610009,PUNTARENAS,CORREDORES,LAUREL                                             
 610011,PUNTARENAS,CORREDORES,CANOAS                                             
@@ -1915,7 +1915,7 @@
 612003,PUNTARENAS,MONTEVERDE,SAN LUIS (BAJOS DE SAN LUIS)                       
 613001,PUNTARENAS,PUERTO JIMENEZ,PUERTO JIMENEZ                                 
 613002,PUNTARENAS,PUERTO JIMENEZ, LA PALMA O INDEPENDENCIA                      
-613003,PUNTARENAS,PUERTO JIMENEZ,CAÑAZA DE JIMENEZ                              
+613003,PUNTARENAS,PUERTO JIMENEZ,CAï¿½AZA DE JIMENEZ                              
 613004,PUNTARENAS,PUERTO JIMENEZ,BOCA GALLARDO DE SANDALO                       
 613005,PUNTARENAS,PUERTO JIMENEZ,CARBONERA                                      
 701001,LIMON,CENTRAL,LIMON                                                      
@@ -2007,7 +2007,7 @@
 702041,LIMON,POCOCI,LLANO BONITO                                                
 702042,LIMON,POCOCI,ASTUA PIRIE                                                 
 702043,LIMON,POCOCI,PROGRESO                                                    
-702044,LIMON,POCOCI,SAN FRANCISCO DE CAÑO SECO                                  
+702044,LIMON,POCOCI,SAN FRANCISCO DE CAï¿½O SECO                                  
 702045,LIMON,POCOCI,LINDA VISTA                                                 
 702046,LIMON,POCOCI,BUENOS AIRES                                                
 702047,LIMON,POCOCI,SAN MARTIN                                                  
@@ -2148,7 +2148,7 @@
 814005,CONSULADO,ESTADOS UNIDOS,NUEVA YORK                                      
 814006,CONSULADO,ESTADOS UNIDOS,WASHINGTON D. C.                                
 815001,CONSULADO,EL SALVADOR,SAN SALVADOR                                       
-816001,CONSULADO,ESPAÑA,MADRID                                                  
+816001,CONSULADO,ESPAï¿½A,MADRID                                                  
 817001,CONSULADO,FRANCIA,PARIS                                                  
 818001,CONSULADO,GUATEMALA,CIUDAD DE GUATEMALA                                  
 819001,CONSULADO,HONDURAS,TEGUCIGALPA                                           

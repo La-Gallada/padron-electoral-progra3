@@ -12,7 +12,7 @@ import padron.entidades.Direccion;
 
 public class RepositorioDistelecTxt implements RepositorioDistelec {
 
-    private final Path   path;
+    private final Path path;
     private final String sep;
 
     // Mapa cargado una sola vez en memoria
@@ -20,7 +20,7 @@ public class RepositorioDistelecTxt implements RepositorioDistelec {
 
     public RepositorioDistelecTxt(Path path, String sep) {
         this.path = path;
-        this.sep  = sep;
+        this.sep = sep;
     }
 
     @Override
@@ -33,8 +33,8 @@ public class RepositorioDistelecTxt implements RepositorioDistelec {
 
                 String[] campos = linea.split("\\" + sep, -1);
 
-                // Formato esperado: codElec|provincia|canton|distrito|recinto
-                if (campos.length < 5) continue;
+                // Formato real: codElec,provincia,canton,distrito
+                if (campos.length < 4) continue;
 
                 String codElec = campos[0].trim();
 
@@ -43,7 +43,7 @@ public class RepositorioDistelecTxt implements RepositorioDistelec {
                     campos[1].trim(),
                     campos[2].trim(),
                     campos[3].trim(),
-                    campos[4].trim()
+                    ""
                 );
 
                 mapa.put(codElec, dir);

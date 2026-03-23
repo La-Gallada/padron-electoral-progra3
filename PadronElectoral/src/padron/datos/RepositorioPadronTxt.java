@@ -10,12 +10,12 @@ import padron.entidades.Persona;
 
 public class RepositorioPadronTxt implements RepositorioPadron {
 
-    private final Path   path;
+    private final Path path;
     private final String sep;
 
     public RepositorioPadronTxt(Path path, String sep) {
         this.path = path;
-        this.sep  = sep;
+        this.sep = sep;
     }
 
     @Override
@@ -28,18 +28,19 @@ public class RepositorioPadronTxt implements RepositorioPadron {
 
                 String[] campos = linea.split("\\" + sep, -1);
 
-                // Formato esperado: cedula|nombre|primerApellido|segundoApellido|codElec
-                if (campos.length < 5) continue;
+                // Formato real:
+                // [0]=cedula, [1]=codElec, [5]=nombre, [6]=primerApellido, [7]=segundoApellido
+                if (campos.length < 8) continue;
 
                 String cedulaArchivo = campos[0].trim();
 
                 if (cedulaArchivo.equals(cedulaNormalizada)) {
                     Persona persona = new Persona(
                         cedulaArchivo,
-                        campos[1].trim(),
-                        campos[2].trim(),
-                        campos[3].trim(),
-                        campos[4].trim()
+                        campos[5].trim(),
+                        campos[6].trim(),
+                        campos[7].trim(),
+                        campos[1].trim()
                     );
                     return Optional.of(persona);
                 }
