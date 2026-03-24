@@ -36,7 +36,10 @@ public final class Serializador {
         if (p == null) return "null";
         return "{"
                 + "\"cedula\":" + Escapes.quoteJson(p.getCedula())
-                + ",\"nombreCompleto\":" + Escapes.quoteJson(p.getNombreCompleto())
+                + ",\"nombre\":" + Escapes.quoteJson(p.getNombre())
+                + ",\"primerApellido\":" + Escapes.quoteJson(p.getPrimerApellido())
+                + ",\"segundoApellido\":" + Escapes.quoteJson(p.getSegundoApellido())
+                + ",\"codElec\":" + Escapes.quoteJson(p.getCodElec())
                 + "}";
     }
 
@@ -46,7 +49,7 @@ public final class Serializador {
                 + "\"provincia\":" + Escapes.quoteJson(d.getProvincia())
                 + ",\"canton\":" + Escapes.quoteJson(d.getCanton())
                 + ",\"distrito\":" + Escapes.quoteJson(d.getDistrito())
-                + ",\"distelec\":" + Escapes.quoteJson(d.getDistelec())
+                + ",\"recinto\":" + Escapes.quoteJson(d.getRecinto())
                 + "}";
     }
 
@@ -86,7 +89,10 @@ public final class Serializador {
         if (p == null) return "<persona/>";
         return "<persona>"
                 + "<cedula>" + Escapes.xml(p.getCedula()) + "</cedula>"
-                + "<nombreCompleto>" + Escapes.xml(p.getNombreCompleto()) + "</nombreCompleto>"
+                + "<nombre>" + Escapes.xml(p.getNombre()) + "</nombre>"
+                + "<primerApellido>" + Escapes.xml(p.getPrimerApellido()) + "</primerApellido>"
+                + "<segundoApellido>" + Escapes.xml(p.getSegundoApellido()) + "</segundoApellido>"
+                + "<codElec>" + Escapes.xml(p.getCodElec()) + "</codElec>"
                 + "</persona>";
     }
 
@@ -96,7 +102,7 @@ public final class Serializador {
                 + "<provincia>" + Escapes.xml(d.getProvincia()) + "</provincia>"
                 + "<canton>" + Escapes.xml(d.getCanton()) + "</canton>"
                 + "<distrito>" + Escapes.xml(d.getDistrito()) + "</distrito>"
-                + "<distelec>" + Escapes.xml(d.getDistelec()) + "</distelec>"
+                + "<recinto>" + Escapes.xml(d.getRecinto()) + "</recinto>"
                 + "</direccion>";
     }
 
