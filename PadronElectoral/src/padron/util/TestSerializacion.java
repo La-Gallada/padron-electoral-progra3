@@ -6,7 +6,7 @@ public class TestSerializacion {
     public static void main(String[] args) {
 
         RespuestaPadron ok = RespuestaPadron.ok(
-            new PersonaDTO("1-2345-6789", "JUAN GABRIEL SANDI LOPEZ"),
+            new PersonaDTO("1-2345-6789", "JUAN GABRIEL", "SANDI", "LOPEZ", "01001"), //ese numero lo puse por prueba, no se si es correcto
             new DireccionDTO("San José", "Montes de Oca", "San Pedro", "01-001")
         );
 

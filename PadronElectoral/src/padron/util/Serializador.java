@@ -36,7 +36,7 @@ public final class Serializador {
         if (p == null) return "null";
         return "{"
                 + "\"cedula\":" + Escapes.quoteJson(p.getCedula())
-                + ",\"nombreCompleto\":" + Escapes.quoteJson(p.getNombreCompleto())
+                + ",\"nombreCompleto\":" + Escapes.quoteJson(p.getNombre() + " " + p.getPrimerApellido() + " " + p.getSegundoApellido())
                 + "}";
     }
 
@@ -46,7 +46,7 @@ public final class Serializador {
                 + "\"provincia\":" + Escapes.quoteJson(d.getProvincia())
                 + ",\"canton\":" + Escapes.quoteJson(d.getCanton())
                 + ",\"distrito\":" + Escapes.quoteJson(d.getDistrito())
-                + ",\"distelec\":" + Escapes.quoteJson(d.getDistelec())
+                + ",\"distelec\":" + Escapes.quoteJson(d.getRecinto())
                 + "}";
     }
 
@@ -86,7 +86,7 @@ public final class Serializador {
         if (p == null) return "<persona/>";
         return "<persona>"
                 + "<cedula>" + Escapes.xml(p.getCedula()) + "</cedula>"
-                + "<nombreCompleto>" + Escapes.xml(p.getNombreCompleto()) + "</nombreCompleto>"
+                + "<nombreCompleto>" + Escapes.xml(p.getNombre() + " " + p.getPrimerApellido() + " " + p.getSegundoApellido()) + "</nombreCompleto>"
                 + "</persona>";
     }
 
@@ -96,7 +96,7 @@ public final class Serializador {
                 + "<provincia>" + Escapes.xml(d.getProvincia()) + "</provincia>"
                 + "<canton>" + Escapes.xml(d.getCanton()) + "</canton>"
                 + "<distrito>" + Escapes.xml(d.getDistrito()) + "</distrito>"
-                + "<distelec>" + Escapes.xml(d.getDistelec()) + "</distelec>"
+                + "<distelec>" + Escapes.xml(d.getRecinto()) + "</distelec>"
                 + "</direccion>";
     }
 
