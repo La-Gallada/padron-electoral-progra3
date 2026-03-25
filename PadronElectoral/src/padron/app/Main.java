@@ -7,10 +7,16 @@ import padron.datos.RepositorioPadronTxt;
 import padron.logica.ServicioPadron;
 import padron.presentacion.http.HttpServerApp;
 import padron.presentacion.tcp.TcpServer;
-
+import Vista.Vista;
 public final class Main {
 
     public static void main(String[] args) {
+        
+   
+        Vista vista = new Vista(); /// Abrir Vista
+        vista.setVisible(true);
+        
+        
         try {
             // 1) Datos
             RepositorioDistelec repoDistelec = new RepositorioDistelecTxt(
@@ -32,13 +38,13 @@ public final class Main {
             tcp.start();
             http.start();
 
-            System.out.println("✅ PadronElectoral iniciado");
+            System.out.println(" PadronElectoral iniciado");
             System.out.println("   TCP  : localhost:" + AppConfig.TCP_PORT);
             System.out.println("   HTTP : http://localhost:" + AppConfig.HTTP_PORT);
 
         } catch (Exception ex) {
             // Si falla el arranque, se muestra error claro
-            System.err.println("❌ Error iniciando PadronElectoral: " + ex.getMessage());
+            System.err.println(" Error iniciando PadronElectoral: " + ex.getMessage());
             ex.printStackTrace();
         }
     }
