@@ -9,9 +9,6 @@ public final class Serializador {
 
     private Serializador() {}
 
-    // =========================
-    // JSON
-    // =========================
     public static String toJson(RespuestaPadron r) {
         if (r == null) {
             return "{\"ok\":false,\"error\":{\"codigo\":\"NULL\",\"mensaje\":\"Respuesta nula\"}}";
@@ -63,9 +60,6 @@ public final class Serializador {
                 + "}";
     }
 
-    // =========================
-    // XML
-    // =========================
     public static String toXml(RespuestaPadron r) {
         if (r == null) {
             return "<respuesta ok=\"false\"><error><codigo>NULL</codigo><mensaje>Respuesta nula</mensaje></error></respuesta>";

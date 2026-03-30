@@ -3,21 +3,163 @@ package padron.presentacion.http;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+import padron.dto.FormatoSalida;
+import padron.dto.RespuestaPadron;
+import padron.dto.SolicitudPadron;
 import padron.logica.ServicioPadron;
+import padron.util.Serializador;
 
 public class PadronHttpHandler implements HttpHandler {
 
+    private final ServicioPadron servicio;
+
     public PadronHttpHandler(ServicioPadron servicio) {
-        // stub
+        this.servicio = servicio;
     }
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        // Respuesta temporal para confirmar que el server levanta
-        String body = "PadronElectoral HTTP OK";
-        exchange.sendResponseHeaders(200, body.getBytes(StandardCharsets.UTF_8).length);
-        exchange.getResponseBody().write(body.getBytes(StandardCharsets.UTF_8));
+        if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
+            String cuerpo = serializarError(
+                    "METODO_NO_PERMITIDO",
+                    "Método no permitido. Use GET.",
+                    FormatoSalida.JSON
+            );
+            enviarRespuesta(exchange, 405, contentType(FormatoSalida.JSON), cuerpo);
+            return;
+        }
+
+        Map<String, String> params = parsearQueryString(exchange.getRequestURI().getRawQuery());
+
+        String cedula = params.get("cedula");
+        if (cedula == null || cedula.trim().isEmpty()) {
+            String cuerpo = serializarError(
+                    "CEDULA_VACIA",
+                    "El parámetro 'cedula' es obligatorio.",
+                    FormatoSalida.JSON
+            );
+            enviarRespuesta(exchange, 400, contentType(FormatoSalida.JSON), cuerpo);
+            return;
+        }
+
+        String formatoRaw = params.getOrDefault("format", params.getOrDefault("formato", "JSON"));
+        FormatoSalida formato = parsearFormato(formatoRaw);
+        if (formato == null) {
+            String cuerpo = serializarError(
+                    "FORMATO_INVALIDO",
+                    "Formato desconocido: '" + formatoRaw + "'. Use JSON o XML.",
+                    FormatoSalida.JSON
+            );
+            enviarRespuesta(exchange, 400, contentType(FormatoSalida.JSON), cuerpo);
+            return;
+        }
+
+        SolicitudPadron solicitud = new SolicitudPadron(cedula.trim(), formato);
+
+        RespuestaPadron respuesta;
+        try {
+            respuesta = servicio.atender(solicitud);
+        } catch (Exception e) {
+            System.err.println("[HTTP] Error en ServicioPadron: " + e.getMessage());
+            String cuerpo = serializarError(
+                    "ERROR_INTERNO",
+                    "Error interno del servidor.",
+                    formato
+            );
+            enviarRespuesta(exchange, 500, contentType(formato), cuerpo);
+            return;
+        }
+
+        int status = respuesta.isOk() ? 200 : mapearStatus(respuesta);
+        String cuerpo = serializar(respuesta, formato);
+        enviarRespuesta(exchange, status, contentType(formato), cuerpo);
+    }
+
+    private int mapearStatus(RespuestaPadron respuesta) {
+        if (respuesta == null || respuesta.getError() == null) return 500;
+
+        String codigo = respuesta.getError().getCodigo();
+        if (codigo == null) return 500;
+
+        switch (codigo) {
+            case "CEDULA_VACIA":
+            case "CEDULA_INVALIDA":
+            case "SOLICITUD_INVALIDA":
+            case "FORMATO_INVALIDO":
+                return 400;
+            case "CEDULA_NO_ENCONTRADA":
+            case "NO_ENCONTRADA":
+                return 404;
+            default:
+                return 500;
+        }
+    }
+
+    private Map<String, String> parsearQueryString(String queryString) {
+        Map<String, String> mapa = new HashMap<>();
+        if (queryString == null || queryString.isEmpty()) return mapa;
+
+        for (String par : queryString.split("&")) {
+            int idx = par.indexOf('=');
+            if (idx > 0) {
+                String clave = decodificar(par.substring(0, idx));
+                String valor = decodificar(par.substring(idx + 1));
+                mapa.put(clave, valor);
+            }
+        }
+        return mapa;
+    }
+
+    private String decodificar(String s) {
+        try {
+            return URLDecoder.decode(s, StandardCharsets.UTF_8.name());
+        } catch (Exception e) {
+            return s;
+        }
+    }
+
+    private FormatoSalida parsearFormato(String raw) {
+        if (raw == null) return FormatoSalida.JSON;
+        String upper = raw.trim().toUpperCase();
+        switch (upper) {
+            case "JSON":
+                return FormatoSalida.JSON;
+            case "XML":
+                return FormatoSalida.XML;
+            default:
+                return null;
+        }
+    }
+
+    private String serializar(RespuestaPadron respuesta, FormatoSalida formato) {
+        return formato == FormatoSalida.XML
+                ? Serializador.toXml(respuesta)
+                : Serializador.toJson(respuesta);
+    }
+
+    private String serializarError(String codigo, String mensaje, FormatoSalida formato) {
+        return serializar(RespuestaPadron.error(codigo, mensaje), formato);
+    }
+
+    private String contentType(FormatoSalida formato) {
+        return formato == FormatoSalida.XML
+                ? "application/xml; charset=UTF-8"
+                : "application/json; charset=UTF-8";
+    }
+
+    private void enviarRespuesta(HttpExchange exchange, int codigo, String contentType, String cuerpo)
+            throws IOException {
+        byte[] bytes = cuerpo.getBytes(StandardCharsets.UTF_8);
+        exchange.getResponseHeaders().set("Content-Type", contentType);
+        exchange.sendResponseHeaders(codigo, bytes.length);
+        try (OutputStream os = exchange.getResponseBody()) {
+            os.write(bytes);
+        }
         exchange.close();
     }
 }
