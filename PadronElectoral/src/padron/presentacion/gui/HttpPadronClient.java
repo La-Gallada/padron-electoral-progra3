@@ -2,10 +2,11 @@ package padron.presentacion.gui;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URLEncoder;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 public class HttpPadronClient {
@@ -26,28 +27,36 @@ public class HttpPadronClient {
         connection.setConnectTimeout(5000);
         connection.setReadTimeout(5000);
 
+        InputStream stream;
         int status = connection.getResponseCode();
-
-        BufferedReader reader;
         if (status >= 200 && status < 400) {
-            reader = new BufferedReader(
-                    new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8)
-            );
+            stream = connection.getInputStream();
         } else {
-            reader = new BufferedReader(
-                    new InputStreamReader(connection.getErrorStream(), StandardCharsets.UTF_8)
-            );
+            stream = connection.getErrorStream();
+        }
+
+        String response = readStream(stream);
+        connection.disconnect();
+        return response;
+    }
+
+    private String readStream(InputStream stream) throws IOException {
+        if (stream == null) {
+            return "";
         }
 
         StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            sb.append(line).append(System.lineSeparator());
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
+            String line;
+            boolean firstLine = true;
+            while ((line = reader.readLine()) != null) {
+                if (!firstLine) {
+                    sb.append(System.lineSeparator());
+                }
+                sb.append(line);
+                firstLine = false;
+            }
         }
-
-        reader.close();
-        connection.disconnect();
-
-        return sb.toString().trim();
+        return sb.toString();
     }
 }
