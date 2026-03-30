@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,21 +14,6 @@ import padron.dto.SolicitudPadron;
 import padron.logica.ServicioPadron;
 import padron.util.Serializador;
 
-/**
- * handler http para el endpoint /padron.
- *
- * metodo aceptado: get
- *
- * parametros de consulta:
- *   cedula  – numero de cedula costarricense
- *   formato – json (default) o xml
- *
- * respuestas:
- *   200 ok           – solicitud procesada (ok: true o error de negocio ok: false)
- *   400 bad request  – parametros faltantes o formato invalido
- *   405 method not allowed – metodo distinto de get
- *   500 internal server error – excepcion inesperada
- */
 public class PadronHttpHandler implements HttpHandler {
 
     private final ServicioPadron servicio;
@@ -36,72 +22,84 @@ public class PadronHttpHandler implements HttpHandler {
         this.servicio = servicio;
     }
 
-    // HttpHandler
-   
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-
-        // solo aceptar get.
         if (!"GET".equalsIgnoreCase(exchange.getRequestMethod())) {
-            enviarRespuesta(exchange, 405, "text/plain", "Método no permitido. Use GET.");
+            String cuerpo = serializarError(
+                    "METODO_NO_PERMITIDO",
+                    "Método no permitido. Use GET.",
+                    FormatoSalida.JSON
+            );
+            enviarRespuesta(exchange, 405, contentType(FormatoSalida.JSON), cuerpo);
             return;
         }
 
-        // parsear parametros de la url.
-        String queryString = exchange.getRequestURI().getRawQuery();
-        Map<String, String> params = parsearQueryString(queryString);
+        Map<String, String> params = parsearQueryString(exchange.getRequestURI().getRawQuery());
 
-        // validar parametro cedula
         String cedula = params.get("cedula");
         if (cedula == null || cedula.trim().isEmpty()) {
-            String cuerpo = serializarError("PARAMETRO_FALTANTE",
-                "El parámetro 'cedula' es obligatorio", FormatoSalida.JSON);
+            String cuerpo = serializarError(
+                    "CEDULA_VACIA",
+                    "El parámetro 'cedula' es obligatorio.",
+                    FormatoSalida.JSON
+            );
             enviarRespuesta(exchange, 400, contentType(FormatoSalida.JSON), cuerpo);
             return;
         }
-        cedula = cedula.trim();
 
-        // validar parametro formato (opcional, json por defecto)
-        String formatoStr = params.getOrDefault("formato", "JSON").trim().toUpperCase();
-        FormatoSalida formato;
-        switch (formatoStr) {
-            case "JSON": formato = FormatoSalida.JSON; break;
-            case "XML":  formato = FormatoSalida.XML;  break;
-            default:
-                String cuerpo = serializarError("FORMATO_INVALIDO",
-                    "Formato desconocido: '" + formatoStr + "'. Use JSON o XML",
-                    FormatoSalida.JSON);
-                enviarRespuesta(exchange, 400, contentType(FormatoSalida.JSON), cuerpo);
-                return;
+        String formatoRaw = params.getOrDefault("format", params.getOrDefault("formato", "JSON"));
+        FormatoSalida formato = parsearFormato(formatoRaw);
+        if (formato == null) {
+            String cuerpo = serializarError(
+                    "FORMATO_INVALIDO",
+                    "Formato desconocido: '" + formatoRaw + "'. Use JSON o XML.",
+                    FormatoSalida.JSON
+            );
+            enviarRespuesta(exchange, 400, contentType(FormatoSalida.JSON), cuerpo);
+            return;
         }
 
-        // construir SolicitudPadron.
-        SolicitudPadron solicitud = new SolicitudPadron(cedula, formato);
+        SolicitudPadron solicitud = new SolicitudPadron(cedula.trim(), formato);
 
-        //  llamar a la logica de negocio.
         RespuestaPadron respuesta;
         try {
             respuesta = servicio.atender(solicitud);
         } catch (Exception e) {
             System.err.println("[HTTP] Error en ServicioPadron: " + e.getMessage());
-            String cuerpo = serializarError("ERROR_INTERNO",
-                "Error interno del servidor: " + e.getMessage(), formato);
+            String cuerpo = serializarError(
+                    "ERROR_INTERNO",
+                    "Error interno del servidor.",
+                    formato
+            );
             enviarRespuesta(exchange, 500, contentType(formato), cuerpo);
             return;
         }
 
-        //  serializar y enviar
-        //  http 200 siempre: el ok/error va dentro del cuerpo (siguiendo el contrato del DTO)
+        int status = respuesta.isOk() ? 200 : mapearStatus(respuesta);
         String cuerpo = serializar(respuesta, formato);
-        enviarRespuesta(exchange, 200, contentType(formato), cuerpo);
+        enviarRespuesta(exchange, status, contentType(formato), cuerpo);
     }
 
-    // helpers privados
-    
-    /**
-     * parsea "cedula = 123 & formato = json" a un Map.
-     * devuelve un mapa vacio si queryString es null.
-     */
+    private int mapearStatus(RespuestaPadron respuesta) {
+        if (respuesta == null || respuesta.getError() == null) return 500;
+
+        String codigo = respuesta.getError().getCodigo();
+        if (codigo == null) return 500;
+
+        switch (codigo) {
+            case "CEDULA_VACIA":
+            case "CEDULA_INVALIDA":
+            case "SOLICITUD_INVALIDA":
+            case "FORMATO_INVALIDO":
+                return 400;
+            case "CEDULA_NO_ENCONTRADA":
+            case "NO_ENCONTRADA":
+                return 404;
+            default:
+                return 500;
+        }
+    }
+
     private Map<String, String> parsearQueryString(String queryString) {
         Map<String, String> mapa = new HashMap<>();
         if (queryString == null || queryString.isEmpty()) return mapa;
@@ -117,44 +115,48 @@ public class PadronHttpHandler implements HttpHandler {
         return mapa;
     }
 
-    // decodifica (sin dependencias externas). 
     private String decodificar(String s) {
         try {
-            return java.net.URLDecoder.decode(s, StandardCharsets.UTF_8.name());
+            return URLDecoder.decode(s, StandardCharsets.UTF_8.name());
         } catch (Exception e) {
-            return s; // si falla, devolver tal cual
+            return s;
         }
     }
 
-    //  serializa al formato indicado.
-    private String serializar(RespuestaPadron respuesta, FormatoSalida formato) {
-        return formato == FormatoSalida.XML
-            ? Serializador.toXml(respuesta)
-            : Serializador.toJson(respuesta);
+    private FormatoSalida parsearFormato(String raw) {
+        if (raw == null) return FormatoSalida.JSON;
+        String upper = raw.trim().toUpperCase();
+        switch (upper) {
+            case "JSON":
+                return FormatoSalida.JSON;
+            case "XML":
+                return FormatoSalida.XML;
+            default:
+                return null;
+        }
     }
 
-    //  construye y serializa un error antes de llamar al servicio. 
+    private String serializar(RespuestaPadron respuesta, FormatoSalida formato) {
+        return formato == FormatoSalida.XML
+                ? Serializador.toXml(respuesta)
+                : Serializador.toJson(respuesta);
+    }
+
     private String serializarError(String codigo, String mensaje, FormatoSalida formato) {
         return serializar(RespuestaPadron.error(codigo, mensaje), formato);
     }
 
-    //  devuelve el content type correcto para el formato. 
     private String contentType(FormatoSalida formato) {
         return formato == FormatoSalida.XML
-            ? "application/xml; charset=UTF-8"
-            : "application/json; charset=UTF-8";
+                ? "application/xml; charset=UTF-8"
+                : "application/json; charset=UTF-8";
     }
 
-    /**
-     * envia la respuesta http con codigo, content type y cuerpo.
-     * siempre cierra el exchange.
-     */
-    private void enviarRespuesta(HttpExchange exchange, int codigo,
-                                  String contentType, String cuerpo) throws IOException {
+    private void enviarRespuesta(HttpExchange exchange, int codigo, String contentType, String cuerpo)
+            throws IOException {
         byte[] bytes = cuerpo.getBytes(StandardCharsets.UTF_8);
         exchange.getResponseHeaders().set("Content-Type", contentType);
         exchange.sendResponseHeaders(codigo, bytes.length);
-
         try (OutputStream os = exchange.getResponseBody()) {
             os.write(bytes);
         }
