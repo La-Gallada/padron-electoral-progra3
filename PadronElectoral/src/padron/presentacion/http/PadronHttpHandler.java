@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import padron.dto.FormatoSalida;
+import padron.dto.PadronPageResponse;
 import padron.dto.RespuestaPadron;
 import padron.dto.SolicitudPadron;
 import padron.logica.ServicioPadron;
@@ -34,9 +35,30 @@ public class PadronHttpHandler implements HttpHandler {
             return;
         }
 
+        String path = exchange.getRequestURI().getPath();
+        if (path == null) {
+            path = "";
+        }
+
+        path = path.trim();
+
+        // IMPORTANTE: primero revisar la ruta de exploración
+        if ("/padron/explorar".equalsIgnoreCase(path) || path.endsWith("/padron/explorar")) {
+            manejarExplorar(exchange);
+            return;
+        }
+
+        manejarConsultaIndividual(exchange, path);
+    }
+
+    private void manejarConsultaIndividual(HttpExchange exchange, String path) throws IOException {
         Map<String, String> params = parsearQueryString(exchange.getRequestURI().getRawQuery());
 
         String cedula = params.get("cedula");
+        if (cedula == null || cedula.trim().isEmpty()) {
+            cedula = extraerCedulaDesdePath(path);
+        }
+
         if (cedula == null || cedula.trim().isEmpty()) {
             String cuerpo = serializarError(
                     "CEDULA_VACIA",
@@ -49,6 +71,7 @@ public class PadronHttpHandler implements HttpHandler {
 
         String formatoRaw = params.getOrDefault("format", params.getOrDefault("formato", "JSON"));
         FormatoSalida formato = parsearFormato(formatoRaw);
+
         if (formato == null) {
             String cuerpo = serializarError(
                     "FORMATO_INVALIDO",
@@ -60,8 +83,8 @@ public class PadronHttpHandler implements HttpHandler {
         }
 
         SolicitudPadron solicitud = new SolicitudPadron(cedula.trim(), formato);
-
         RespuestaPadron respuesta;
+
         try {
             respuesta = servicio.atender(solicitud);
         } catch (Exception e) {
@@ -75,16 +98,47 @@ public class PadronHttpHandler implements HttpHandler {
             return;
         }
 
-        int status = respuesta.isOk() ? 200 : mapearStatus(respuesta);
+        int status = respuesta.isOk() ? 200 : mapearStatusConsulta(respuesta);
         String cuerpo = serializar(respuesta, formato);
         enviarRespuesta(exchange, status, contentType(formato), cuerpo);
     }
 
-    private int mapearStatus(RespuestaPadron respuesta) {
-        if (respuesta == null || respuesta.getError() == null) return 500;
+    private void manejarExplorar(HttpExchange exchange) throws IOException {
+        Map<String, String> params = parsearQueryString(exchange.getRequestURI().getRawQuery());
+
+        String criterio = params.getOrDefault("q", params.getOrDefault("nombre", "")).trim();
+        int pagina = parsearEnteroPositivo(params.get("page"), 1);
+        int size = parsearEnteroPositivo(params.get("size"), 100);
+
+        String formatoRaw = params.getOrDefault("format", params.getOrDefault("formato", "JSON"));
+        FormatoSalida formato = parsearFormato(formatoRaw);
+
+        if (formato == null) {
+            String cuerpo = serializarError(
+                    "FORMATO_INVALIDO",
+                    "Formato desconocido: '" + formatoRaw + "'. Use JSON o XML.",
+                    FormatoSalida.JSON
+            );
+            enviarRespuesta(exchange, 400, contentType(FormatoSalida.JSON), cuerpo);
+            return;
+        }
+
+        PadronPageResponse respuesta = servicio.explorar(criterio, pagina, size);
+        int status = respuesta.isOk() ? 200 : mapearStatusPagina(respuesta);
+        String cuerpo = serializarPagina(respuesta, formato);
+
+        enviarRespuesta(exchange, status, contentType(formato), cuerpo);
+    }
+
+    private int mapearStatusConsulta(RespuestaPadron respuesta) {
+        if (respuesta == null || respuesta.getError() == null) {
+            return 500;
+        }
 
         String codigo = respuesta.getError().getCodigo();
-        if (codigo == null) return 500;
+        if (codigo == null) {
+            return 500;
+        }
 
         switch (codigo) {
             case "CEDULA_VACIA":
@@ -100,18 +154,60 @@ public class PadronHttpHandler implements HttpHandler {
         }
     }
 
+    private int mapearStatusPagina(PadronPageResponse respuesta) {
+        if (respuesta == null || respuesta.getError() == null) {
+            return 500;
+        }
+
+        String codigo = respuesta.getError().getCodigo();
+        if (codigo == null) {
+            return 500;
+        }
+
+        switch (codigo) {
+            case "PAGINA_INVALIDA":
+            case "TAMANO_INVALIDO":
+                return 400;
+            default:
+                return 500;
+        }
+    }
+
+    private String extraerCedulaDesdePath(String path) {
+        if (path == null) {
+            return null;
+        }
+
+        if (!path.startsWith("/padron/")) {
+            return null;
+        }
+
+        String resto = path.substring("/padron/".length()).trim();
+
+        if (resto.isEmpty() || resto.contains("/") || "explorar".equalsIgnoreCase(resto)) {
+            return null;
+        }
+
+        return resto;
+    }
+
     private Map<String, String> parsearQueryString(String queryString) {
         Map<String, String> mapa = new HashMap<>();
-        if (queryString == null || queryString.isEmpty()) return mapa;
+
+        if (queryString == null || queryString.isEmpty()) {
+            return mapa;
+        }
 
         for (String par : queryString.split("&")) {
             int idx = par.indexOf('=');
+
             if (idx > 0) {
                 String clave = decodificar(par.substring(0, idx));
                 String valor = decodificar(par.substring(idx + 1));
                 mapa.put(clave, valor);
             }
         }
+
         return mapa;
     }
 
@@ -123,8 +219,24 @@ public class PadronHttpHandler implements HttpHandler {
         }
     }
 
+    private int parsearEnteroPositivo(String raw, int valorPorDefecto) {
+        if (raw == null || raw.trim().isEmpty()) {
+            return valorPorDefecto;
+        }
+
+        try {
+            int valor = Integer.parseInt(raw.trim());
+            return valor > 0 ? valor : valorPorDefecto;
+        } catch (NumberFormatException e) {
+            return valorPorDefecto;
+        }
+    }
+
     private FormatoSalida parsearFormato(String raw) {
-        if (raw == null) return FormatoSalida.JSON;
+        if (raw == null) {
+            return FormatoSalida.JSON;
+        }
+
         String upper = raw.trim().toUpperCase();
         switch (upper) {
             case "JSON":
@@ -137,6 +249,12 @@ public class PadronHttpHandler implements HttpHandler {
     }
 
     private String serializar(RespuestaPadron respuesta, FormatoSalida formato) {
+        return formato == FormatoSalida.XML
+                ? Serializador.toXml(respuesta)
+                : Serializador.toJson(respuesta);
+    }
+
+    private String serializarPagina(PadronPageResponse respuesta, FormatoSalida formato) {
         return formato == FormatoSalida.XML
                 ? Serializador.toXml(respuesta)
                 : Serializador.toJson(respuesta);
@@ -155,11 +273,14 @@ public class PadronHttpHandler implements HttpHandler {
     private void enviarRespuesta(HttpExchange exchange, int codigo, String contentType, String cuerpo)
             throws IOException {
         byte[] bytes = cuerpo.getBytes(StandardCharsets.UTF_8);
+
         exchange.getResponseHeaders().set("Content-Type", contentType);
         exchange.sendResponseHeaders(codigo, bytes.length);
+
         try (OutputStream os = exchange.getResponseBody()) {
             os.write(bytes);
         }
+
         exchange.close();
     }
 }
