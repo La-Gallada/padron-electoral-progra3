@@ -3,6 +3,7 @@ package padron.presentacion.gui;
 import com.itextpdf.text.DocumentException;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -31,8 +32,19 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableCellRenderer;
 
 public class PadronGuiFrame extends JFrame {
+
+    // ── PALETA BANDERA COSTA RICA ──────────────────────────────────────────
+    private static final Color CR_AZUL_OSCURO  = new Color(0,   61,  165); // #003DA5
+    private static final Color CR_AZUL_MEDIO   = new Color(21,  101, 192); // #1565C0
+    private static final Color CR_AZUL_CLARO   = new Color(227, 234, 246); // #E3EAF6
+    private static final Color CR_AZUL_FONDO   = new Color(240, 244, 250); // #F0F4FA
+    private static final Color CR_ROJO_OSCURO  = new Color(200, 16,  46);  // #C8102E
+    private static final Color CR_ROJO_VIVO    = new Color(229, 57,  53);  // #E53935
+    private static final Color CR_BLANCO       = Color.WHITE;
+    // ──────────────────────────────────────────────────────────────────────
 
     private static final int TAMANO_PAGINA = 100;
 
@@ -97,6 +109,7 @@ public class PadronGuiFrame extends JFrame {
         lblResumenSeleccionados = new JLabel("Seleccionados: 0");
         lblEstado = new JLabel("Estado: listo");
 
+        estilizarBotones();
         construirUI();
         configurarEventos();
 
@@ -107,10 +120,57 @@ public class PadronGuiFrame extends JFrame {
         cargarPagina(1);
     }
 
+    // ── Estilos de botones ─────────────────────────────────────────────────
+
+    private void estilizarBotones() {
+        // Botón primario: rojo CR (acción de exportar)
+        estilizarBotonPrimario(btnExportarPdf);
+
+        // Botones secundarios: azul CR
+        estilizarBotonSecundario(btnBuscar);
+        estilizarBotonSecundario(btnAgregarSeleccionado);
+
+        // Botones neutros: borde azul medio, texto azul oscuro
+        estilizarBotonNeutro(btnLimpiarBusqueda);
+        estilizarBotonNeutro(btnAnterior);
+        estilizarBotonNeutro(btnSiguiente);
+        estilizarBotonNeutro(btnQuitarSeleccionado);
+        estilizarBotonNeutro(btnLimpiarLista);
+    }
+
+    private void estilizarBotonPrimario(JButton btn) {
+        btn.setBackground(CR_ROJO_OSCURO);
+        btn.setForeground(CR_BLANCO);
+        btn.setOpaque(true);
+        btn.setBorderPainted(false);
+        btn.setFocusPainted(false);
+        btn.setFont(btn.getFont().deriveFont(Font.BOLD, 13f));
+    }
+
+    private void estilizarBotonSecundario(JButton btn) {
+        btn.setBackground(CR_AZUL_OSCURO);
+        btn.setForeground(CR_BLANCO);
+        btn.setOpaque(true);
+        btn.setBorderPainted(false);
+        btn.setFocusPainted(false);
+        btn.setFont(btn.getFont().deriveFont(Font.PLAIN, 13f));
+    }
+
+    private void estilizarBotonNeutro(JButton btn) {
+        btn.setBackground(CR_BLANCO);
+        btn.setForeground(CR_AZUL_OSCURO);
+        btn.setOpaque(true);
+        btn.setBorder(BorderFactory.createLineBorder(CR_AZUL_MEDIO));
+        btn.setFocusPainted(false);
+        btn.setFont(btn.getFont().deriveFont(Font.PLAIN, 13f));
+    }
+
+    // ── Construcción de UI ─────────────────────────────────────────────────
+
     private void construirUI() {
         JPanel root = new JPanel(new BorderLayout(0, 10));
         root.setBorder(new EmptyBorder(14, 14, 14, 14));
-        root.setBackground(new Color(245, 247, 250));
+        root.setBackground(CR_AZUL_FONDO);
 
         JSplitPane splitPane = new JSplitPane(
                 JSplitPane.HORIZONTAL_SPLIT,
@@ -120,33 +180,81 @@ public class PadronGuiFrame extends JFrame {
         splitPane.setResizeWeight(0.68);
 
         JPanel panelEstado = new JPanel(new BorderLayout());
-        panelEstado.setBackground(new Color(245, 247, 250));
+        panelEstado.setBackground(CR_AZUL_FONDO);
         panelEstado.setBorder(new EmptyBorder(4, 4, 0, 4));
 
         lblEstado.setFont(lblEstado.getFont().deriveFont(Font.BOLD, 13f));
-        lblEstado.setForeground(new Color(25, 118, 210));
+        lblEstado.setForeground(CR_AZUL_OSCURO);
 
         panelEstado.add(lblEstado, BorderLayout.WEST);
 
+        root.add(construirBandera(), BorderLayout.NORTH);
         root.add(splitPane, BorderLayout.CENTER);
         root.add(panelEstado, BorderLayout.SOUTH);
 
         setContentPane(root);
     }
 
+    /**
+     * Barra decorativa con las franjas de la bandera de Costa Rica.
+     * Proporciones oficiales: azul(1) - blanco(1) - rojo(2) - blanco(1) - azul(1)
+     * Altura total: 18px, se ve como una franja fina pero reconocible.
+     */
+    private JPanel construirBandera() {
+        // Pesos de cada franja según proporciones reales de la bandera CR
+        int[] pesos = {1, 1, 2, 1, 1};
+        Color[] colores = {CR_AZUL_OSCURO, CR_BLANCO, CR_ROJO_OSCURO, CR_BLANCO, CR_AZUL_OSCURO};
+        int total = 6; // suma de pesos
+
+        JPanel bandera = new JPanel(null); // layout absoluto para control exacto de proporciones
+        bandera.setPreferredSize(new Dimension(0, 18));
+
+        // Usamos un componente que recalcula al redimensionar
+        JPanel franjas = new JPanel() {
+            @Override
+            public void doLayout() {
+                int w = getWidth();
+                int h = getHeight();
+                int x = 0;
+                Component[] comps = getComponents();
+                for (int i = 0; i < comps.length; i++) {
+                    int franjaH = (h * pesos[i]) / total;
+                    // última franja toma el resto para evitar píxeles sobrantes
+                    if (i == comps.length - 1) {
+                        franjaH = h - x; // x acumula altura usada
+                    }
+                    comps[i].setBounds(0, x, w, franjaH);
+                    x += franjaH;
+                }
+            }
+        };
+        franjas.setLayout(null);
+        franjas.setPreferredSize(new Dimension(0, 18));
+
+        for (Color color : colores) {
+            JPanel franja = new JPanel();
+            franja.setBackground(color);
+            franja.setOpaque(true);
+            franjas.add(franja);
+        }
+
+        return franjas;
+    }
+
     private JPanel construirPanelIzquierdo() {
         JPanel panel = new JPanel(new BorderLayout(0, 10));
-        panel.setBackground(Color.WHITE);
+        panel.setBackground(CR_BLANCO);
         panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(222, 226, 230)),
+                BorderFactory.createLineBorder(CR_AZUL_MEDIO),
                 new EmptyBorder(12, 12, 12, 12)
         ));
 
         JLabel titulo = new JLabel("Padrón / Búsqueda");
         titulo.setFont(titulo.getFont().deriveFont(Font.BOLD, 16f));
+        titulo.setForeground(CR_AZUL_OSCURO);
 
         JLabel ayuda = new JLabel("Deja el campo vacío para explorar todo el padrón o escribe nombre/cédula para filtrar.");
-        ayuda.setForeground(new Color(90, 90, 90));
+        ayuda.setForeground(CR_AZUL_MEDIO);
 
         JPanel topInfo = new JPanel(new BorderLayout());
         topInfo.setOpaque(false);
@@ -155,7 +263,9 @@ public class PadronGuiFrame extends JFrame {
 
         JPanel panelBusqueda = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
         panelBusqueda.setOpaque(false);
-        panelBusqueda.add(new JLabel("Nombre o cédula:"));
+        JLabel lblNombreCedula = new JLabel("Nombre o cédula:");
+        lblNombreCedula.setForeground(CR_AZUL_OSCURO);
+        panelBusqueda.add(lblNombreCedula);
         panelBusqueda.add(txtBusqueda);
         panelBusqueda.add(btnBuscar);
         panelBusqueda.add(btnLimpiarBusqueda);
@@ -165,15 +275,31 @@ public class PadronGuiFrame extends JFrame {
         top.add(topInfo, BorderLayout.NORTH);
         top.add(panelBusqueda, BorderLayout.SOUTH);
 
+        // Tabla con estilo CR
         tblPadron.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblPadron.setRowHeight(24);
         tblPadron.setAutoCreateRowSorter(true);
+        tblPadron.setSelectionBackground(CR_ROJO_OSCURO);
+        tblPadron.setSelectionForeground(CR_BLANCO);
+        tblPadron.setDefaultRenderer(Object.class, new FilasAlternasRenderer());
+
+        // Header azul oscuro
+        tblPadron.getTableHeader().setBackground(CR_AZUL_OSCURO);
+        tblPadron.getTableHeader().setForeground(CR_AZUL_OSCURO);
+        tblPadron.getTableHeader().setFont(
+                tblPadron.getTableHeader().getFont().deriveFont(Font.BOLD, 13f)
+        );
 
         JScrollPane scroll = new JScrollPane(tblPadron);
-        scroll.setBorder(BorderFactory.createTitledBorder("Resultados"));
+        scroll.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(CR_AZUL_MEDIO),
+                "Resultados"
+        ));
 
         JPanel bottom = new JPanel(new BorderLayout(0, 8));
         bottom.setOpaque(false);
+
+        lblResumenPadron.setForeground(CR_AZUL_MEDIO);
 
         JPanel nav = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         nav.setOpaque(false);
@@ -193,25 +319,42 @@ public class PadronGuiFrame extends JFrame {
 
     private JPanel construirPanelDerecho() {
         JPanel panel = new JPanel(new BorderLayout(0, 10));
-        panel.setBackground(Color.WHITE);
+        panel.setBackground(CR_BLANCO);
         panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(222, 226, 230)),
+                BorderFactory.createLineBorder(CR_AZUL_MEDIO),
                 new EmptyBorder(12, 12, 12, 12)
         ));
 
         JLabel titulo = new JLabel("Lista seleccionada para PDF");
         titulo.setFont(titulo.getFont().deriveFont(Font.BOLD, 16f));
+        titulo.setForeground(CR_AZUL_OSCURO);
 
+        // Tabla con estilo CR
         tblSeleccionados.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblSeleccionados.setRowHeight(24);
         tblSeleccionados.setAutoCreateRowSorter(true);
+        tblSeleccionados.setSelectionBackground(CR_ROJO_OSCURO);
+        tblSeleccionados.setSelectionForeground(CR_BLANCO);
+        tblSeleccionados.setDefaultRenderer(Object.class, new FilasAlternasRenderer());
+
+        // Header azul oscuro
+        tblSeleccionados.getTableHeader().setBackground(CR_AZUL_OSCURO);
+        tblSeleccionados.getTableHeader().setForeground(CR_AZUL_OSCURO);
+        tblSeleccionados.getTableHeader().setFont(
+                tblSeleccionados.getTableHeader().getFont().deriveFont(Font.BOLD, 13f)
+        );
 
         JScrollPane scroll = new JScrollPane(tblSeleccionados);
-        scroll.setBorder(BorderFactory.createTitledBorder("Seleccionados"));
+        scroll.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(CR_AZUL_MEDIO),
+                "Seleccionados"
+        ));
 
         JPanel formatoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         formatoPanel.setOpaque(false);
-        formatoPanel.add(new JLabel("Formato detalle PDF:"));
+        JLabel lblFormato = new JLabel("Formato detalle PDF:");
+        lblFormato.setForeground(CR_AZUL_OSCURO);
+        formatoPanel.add(lblFormato);
         formatoPanel.add(cmbFormatoDetalle);
 
         JPanel botones = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
@@ -219,6 +362,8 @@ public class PadronGuiFrame extends JFrame {
         botones.add(btnQuitarSeleccionado);
         botones.add(btnLimpiarLista);
         botones.add(btnExportarPdf);
+
+        lblResumenSeleccionados.setForeground(CR_AZUL_MEDIO);
 
         JPanel bottom = new JPanel(new BorderLayout(0, 8));
         bottom.setOpaque(false);
@@ -232,6 +377,10 @@ public class PadronGuiFrame extends JFrame {
 
         return panel;
     }
+
+
+
+    // ── Eventos ────────────────────────────────────────────────────────────
 
     private void configurarEventos() {
         btnBuscar.addActionListener(e -> {
@@ -289,6 +438,8 @@ public class PadronGuiFrame extends JFrame {
             }
         });
     }
+
+    // ── Lógica de negocio (sin cambios) ───────────────────────────────────
 
     private void cargarPagina(int paginaDeseada) {
         String criterio = txtBusqueda.getText().trim();
@@ -552,18 +703,38 @@ public class PadronGuiFrame extends JFrame {
         return "Ocurrió un error inesperado.\nDetalle técnico: " + cause.getMessage();
     }
 
+    // ── Estado con colores CR ──────────────────────────────────────────────
+
     private void setEstadoListo(String detalle) {
-        lblEstado.setForeground(new Color(25, 118, 210));
+        lblEstado.setForeground(CR_AZUL_OSCURO);
         lblEstado.setText("Estado: " + detalle);
     }
 
     private void setEstadoConsultando() {
-        lblEstado.setForeground(new Color(237, 108, 2));
+        lblEstado.setForeground(CR_ROJO_VIVO);
         lblEstado.setText("Estado: consultando...");
     }
 
     private void setEstadoError(String detalle) {
-        lblEstado.setForeground(new Color(198, 40, 40));
+        lblEstado.setForeground(CR_ROJO_OSCURO);
         lblEstado.setText("Estado: " + detalle);
+    }
+
+    // ── Renderer filas alternas ────────────────────────────────────────────
+
+    private static class FilasAlternasRenderer extends DefaultTableCellRenderer {
+        @Override
+        public Component getTableCellRendererComponent(
+                JTable table, Object value, boolean isSelected,
+                boolean hasFocus, int row, int column) {
+
+            super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            setOpaque(true);
+            if (!isSelected) {
+                setBackground(row % 2 == 0 ? Color.WHITE : new Color(227, 234, 246));
+                setForeground(Color.BLACK);
+            }
+            return this;
+        }
     }
 }
