@@ -42,7 +42,6 @@ public class PadronHttpHandler implements HttpHandler {
 
         path = path.trim();
 
-        // IMPORTANTE: primero revisar la ruta de exploración
         if ("/padron/explorar".equalsIgnoreCase(path) || path.endsWith("/padron/explorar")) {
             manejarExplorar(exchange);
             return;
@@ -106,9 +105,9 @@ public class PadronHttpHandler implements HttpHandler {
     private void manejarExplorar(HttpExchange exchange) throws IOException {
         Map<String, String> params = parsearQueryString(exchange.getRequestURI().getRawQuery());
 
-        String criterio = params.getOrDefault("q", params.getOrDefault("nombre", "")).trim();
-        int pagina = parsearEnteroPositivo(params.get("page"), 1);
-        int size = parsearEnteroPositivo(params.get("size"), 100);
+        String criterio = params.getOrDefault("criterio", "").trim();
+        int pagina = parsearEnteroPositivo(params.get("pagina"), 1);
+        int tamano = parsearEnteroPositivo(params.get("tamano"), 100);
 
         String formatoRaw = params.getOrDefault("format", params.getOrDefault("formato", "JSON"));
         FormatoSalida formato = parsearFormato(formatoRaw);
@@ -123,7 +122,7 @@ public class PadronHttpHandler implements HttpHandler {
             return;
         }
 
-        PadronPageResponse respuesta = servicio.explorar(criterio, pagina, size);
+        PadronPageResponse respuesta = servicio.explorar(criterio, pagina, tamano);
         int status = respuesta.isOk() ? 200 : mapearStatusPagina(respuesta);
         String cuerpo = serializarPagina(respuesta, formato);
 
