@@ -5,57 +5,101 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 public class HttpPadronClient {
 
+    private static final int CONNECT_TIMEOUT_MS = 5000;
+    private static final int READ_TIMEOUT_MS = 30000;
+
     private final String baseUrl;
 
     public HttpPadronClient(String baseUrl) {
-        this.baseUrl = baseUrl;
+        if (baseUrl == null || baseUrl.isBlank()) {
+            throw new IllegalArgumentException("La baseUrl no puede ser nula o vacía.");
+        }
+
+        this.baseUrl = baseUrl.endsWith("/")
+                ? baseUrl.substring(0, baseUrl.length() - 1)
+                : baseUrl;
     }
 
     public String consultarPorCedula(String cedula, String formato) throws IOException {
-        String cedulaEncoded = URLEncoder.encode(cedula, StandardCharsets.UTF_8);
-        String formatoEncoded = URLEncoder.encode(formato, StandardCharsets.UTF_8);
+        String cedulaEncoded = URLEncoder.encode(
+                cedula == null ? "" : cedula,
+                StandardCharsets.UTF_8
+        );
+        String formatoEncoded = URLEncoder.encode(
+                formato == null ? "json" : formato,
+                StandardCharsets.UTF_8
+        );
 
-        String endpoint = baseUrl + "/padron?cedula=" + cedulaEncoded + "&format=" + formatoEncoded;
+        String endpoint = baseUrl
+                + "/padron?cedula=" + cedulaEncoded
+                + "&format=" + formatoEncoded;
+
         return ejecutarGet(endpoint);
     }
 
     public String explorar(String criterio, int pagina, int tamano, String formato) throws IOException {
-        String criterioEncoded = URLEncoder.encode(criterio == null ? "" : criterio, StandardCharsets.UTF_8);
-        String formatoEncoded = URLEncoder.encode(formato, StandardCharsets.UTF_8);
+        String criterioEncoded = URLEncoder.encode(
+                criterio == null ? "" : criterio,
+                StandardCharsets.UTF_8
+        );
+        String formatoEncoded = URLEncoder.encode(
+                formato == null ? "json" : formato,
+                StandardCharsets.UTF_8
+        );
 
         String endpoint = baseUrl
-                + "/padron/explorar?q=" + criterioEncoded
-                + "&page=" + pagina
-                + "&size=" + tamano
+                + "/padron/explorar?criterio=" + criterioEncoded
+                + "&pagina=" + pagina
+                + "&tamano=" + tamano
                 + "&format=" + formatoEncoded;
 
         return ejecutarGet(endpoint);
     }
 
     private String ejecutarGet(String endpoint) throws IOException {
-        HttpURLConnection connection = (HttpURLConnection) new URL(endpoint).openConnection();
-        connection.setRequestMethod("GET");
-        connection.setConnectTimeout(5000);
-        connection.setReadTimeout(5000);
+        HttpURLConnection connection = null;
 
-        InputStream stream;
-        int status = connection.getResponseCode();
+        try {
+            connection = (HttpURLConnection) new URL(endpoint).openConnection();
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(CONNECT_TIMEOUT_MS);
+            connection.setReadTimeout(READ_TIMEOUT_MS);
+            connection.setRequestProperty("Accept-Charset", "UTF-8");
 
-        if (status >= 200 && status < 400) {
-            stream = connection.getInputStream();
-        } else {
-            stream = connection.getErrorStream();
+            int status = connection.getResponseCode();
+
+            InputStream stream = (status >= 200 && status < 300)
+                    ? connection.getInputStream()
+                    : connection.getErrorStream();
+
+            String response = readStream(stream);
+
+            if (status < 200 || status >= 300) {
+                throw new IOException(
+                        "HTTP " + status + " al consultar " + endpoint
+                        + (response == null || response.isBlank() ? "" : "\nRespuesta: " + response)
+                );
+            }
+
+            return response;
+
+        } catch (SocketTimeoutException e) {
+            throw new IOException(
+                    "La consulta tardó demasiado en responder (timeout de " + READ_TIMEOUT_MS + " ms).",
+                    e
+            );
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
         }
-
-        String response = readStream(stream);
-        connection.disconnect();
-        return response;
     }
 
     private String readStream(InputStream stream) throws IOException {
