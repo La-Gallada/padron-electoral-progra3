@@ -7,16 +7,20 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -29,6 +33,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -37,13 +42,13 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class PadronGuiFrame extends JFrame {
 
     // ── PALETA BANDERA COSTA RICA ──────────────────────────────────────────
-    private static final Color CR_AZUL_OSCURO  = new Color(0,   61,  165); // #003DA5
-    private static final Color CR_AZUL_MEDIO   = new Color(21,  101, 192); // #1565C0
-    private static final Color CR_AZUL_CLARO   = new Color(227, 234, 246); // #E3EAF6
-    private static final Color CR_AZUL_FONDO   = new Color(240, 244, 250); // #F0F4FA
-    private static final Color CR_ROJO_OSCURO  = new Color(200, 16,  46);  // #C8102E
-    private static final Color CR_ROJO_VIVO    = new Color(229, 57,  53);  // #E53935
-    private static final Color CR_BLANCO       = Color.WHITE;
+    private static final Color CR_AZUL_OSCURO = new Color(0, 61, 165);      // #003DA5
+    private static final Color CR_AZUL_MEDIO = new Color(21, 101, 192);     // #1565C0
+    private static final Color CR_AZUL_CLARO = new Color(227, 234, 246);    // #E3EAF6
+    private static final Color CR_AZUL_FONDO = new Color(240, 244, 250);    // #F0F4FA
+    private static final Color CR_ROJO_OSCURO = new Color(200, 16, 46);     // #C8102E
+    private static final Color CR_ROJO_VIVO = new Color(229, 57, 53);       // #E53935
+    private static final Color CR_BLANCO = Color.WHITE;
     // ──────────────────────────────────────────────────────────────────────
 
     private static final int TAMANO_PAGINA = 100;
@@ -109,6 +114,7 @@ public class PadronGuiFrame extends JFrame {
         lblResumenSeleccionados = new JLabel("Seleccionados: 0");
         lblEstado = new JLabel("Estado: listo");
 
+        configurarIconosVentana();
         estilizarBotones();
         construirUI();
         configurarEventos();
@@ -120,17 +126,38 @@ public class PadronGuiFrame extends JFrame {
         cargarPagina(1);
     }
 
+    // ── Íconos de ventana ──────────────────────────────────────────────────
+
+    private void configurarIconosVentana() {
+        List<Image> iconos = new ArrayList<>();
+
+        agregarIcono(iconos, "/padron/presentacion/gui/resources/Logo16.png");
+        agregarIcono(iconos, "/padron/presentacion/gui/resources/Logo32.png");
+        agregarIcono(iconos, "/padron/presentacion/gui/resources/Logo64.png");
+        agregarIcono(iconos, "/padron/presentacion/gui/resources/Logo128.png");
+        agregarIcono(iconos, "/padron/presentacion/gui/resources/Logo256.png");
+
+        if (!iconos.isEmpty()) {
+            setIconImages(iconos);
+            setIconImage(iconos.get(iconos.size() - 1));
+        }
+    }
+
+    private void agregarIcono(List<Image> iconos, String ruta) {
+        URL url = getClass().getResource(ruta);
+        if (url != null) {
+            iconos.add(new ImageIcon(url).getImage());
+        }
+    }
+
     // ── Estilos de botones ─────────────────────────────────────────────────
 
     private void estilizarBotones() {
-        // Botón primario: rojo CR (acción de exportar)
         estilizarBotonPrimario(btnExportarPdf);
 
-        // Botones secundarios: azul CR
         estilizarBotonSecundario(btnBuscar);
         estilizarBotonSecundario(btnAgregarSeleccionado);
 
-        // Botones neutros: borde azul medio, texto azul oscuro
         estilizarBotonNeutro(btnLimpiarBusqueda);
         estilizarBotonNeutro(btnAnterior);
         estilizarBotonNeutro(btnSiguiente);
@@ -198,36 +225,41 @@ public class PadronGuiFrame extends JFrame {
     /**
      * Barra decorativa con las franjas de la bandera de Costa Rica.
      * Proporciones oficiales: azul(1) - blanco(1) - rojo(2) - blanco(1) - azul(1)
-     * Altura total: 18px, se ve como una franja fina pero reconocible.
+     * Altura total: 18px.
      */
     private JPanel construirBandera() {
-        // Pesos de cada franja según proporciones reales de la bandera CR
         int[] pesos = {1, 1, 2, 1, 1};
-        Color[] colores = {CR_AZUL_OSCURO, CR_BLANCO, CR_ROJO_OSCURO, CR_BLANCO, CR_AZUL_OSCURO};
-        int total = 6; // suma de pesos
+        Color[] colores = {
+            CR_AZUL_OSCURO,
+            CR_BLANCO,
+            CR_ROJO_OSCURO,
+            CR_BLANCO,
+            CR_AZUL_OSCURO
+        };
+        int total = 6;
 
-        JPanel bandera = new JPanel(null); // layout absoluto para control exacto de proporciones
+        JPanel bandera = new JPanel(null);
         bandera.setPreferredSize(new Dimension(0, 18));
 
-        // Usamos un componente que recalcula al redimensionar
         JPanel franjas = new JPanel() {
             @Override
             public void doLayout() {
                 int w = getWidth();
                 int h = getHeight();
-                int x = 0;
+                int y = 0;
                 Component[] comps = getComponents();
+
                 for (int i = 0; i < comps.length; i++) {
                     int franjaH = (h * pesos[i]) / total;
-                    // última franja toma el resto para evitar píxeles sobrantes
                     if (i == comps.length - 1) {
-                        franjaH = h - x; // x acumula altura usada
+                        franjaH = h - y;
                     }
-                    comps[i].setBounds(0, x, w, franjaH);
-                    x += franjaH;
+                    comps[i].setBounds(0, y, w, franjaH);
+                    y += franjaH;
                 }
             }
         };
+
         franjas.setLayout(null);
         franjas.setPreferredSize(new Dimension(0, 18));
 
@@ -263,8 +295,10 @@ public class PadronGuiFrame extends JFrame {
 
         JPanel panelBusqueda = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
         panelBusqueda.setOpaque(false);
+
         JLabel lblNombreCedula = new JLabel("Nombre o cédula:");
         lblNombreCedula.setForeground(CR_AZUL_OSCURO);
+
         panelBusqueda.add(lblNombreCedula);
         panelBusqueda.add(txtBusqueda);
         panelBusqueda.add(btnBuscar);
@@ -275,20 +309,13 @@ public class PadronGuiFrame extends JFrame {
         top.add(topInfo, BorderLayout.NORTH);
         top.add(panelBusqueda, BorderLayout.SOUTH);
 
-        // Tabla con estilo CR
         tblPadron.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblPadron.setRowHeight(24);
         tblPadron.setAutoCreateRowSorter(true);
         tblPadron.setSelectionBackground(CR_ROJO_OSCURO);
         tblPadron.setSelectionForeground(CR_BLANCO);
         tblPadron.setDefaultRenderer(Object.class, new FilasAlternasRenderer());
-
-        // Header azul oscuro
-        tblPadron.getTableHeader().setBackground(CR_AZUL_OSCURO);
-        tblPadron.getTableHeader().setForeground(CR_AZUL_OSCURO);
-        tblPadron.getTableHeader().setFont(
-                tblPadron.getTableHeader().getFont().deriveFont(Font.BOLD, 13f)
-        );
+        estilizarHeaderTabla(tblPadron);
 
         JScrollPane scroll = new JScrollPane(tblPadron);
         scroll.setBorder(BorderFactory.createTitledBorder(
@@ -329,20 +356,13 @@ public class PadronGuiFrame extends JFrame {
         titulo.setFont(titulo.getFont().deriveFont(Font.BOLD, 16f));
         titulo.setForeground(CR_AZUL_OSCURO);
 
-        // Tabla con estilo CR
         tblSeleccionados.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblSeleccionados.setRowHeight(24);
         tblSeleccionados.setAutoCreateRowSorter(true);
         tblSeleccionados.setSelectionBackground(CR_ROJO_OSCURO);
         tblSeleccionados.setSelectionForeground(CR_BLANCO);
         tblSeleccionados.setDefaultRenderer(Object.class, new FilasAlternasRenderer());
-
-        // Header azul oscuro
-        tblSeleccionados.getTableHeader().setBackground(CR_AZUL_OSCURO);
-        tblSeleccionados.getTableHeader().setForeground(CR_AZUL_OSCURO);
-        tblSeleccionados.getTableHeader().setFont(
-                tblSeleccionados.getTableHeader().getFont().deriveFont(Font.BOLD, 13f)
-        );
+        estilizarHeaderTabla(tblSeleccionados);
 
         JScrollPane scroll = new JScrollPane(tblSeleccionados);
         scroll.setBorder(BorderFactory.createTitledBorder(
@@ -352,8 +372,10 @@ public class PadronGuiFrame extends JFrame {
 
         JPanel formatoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         formatoPanel.setOpaque(false);
+
         JLabel lblFormato = new JLabel("Formato detalle PDF:");
         lblFormato.setForeground(CR_AZUL_OSCURO);
+
         formatoPanel.add(lblFormato);
         formatoPanel.add(cmbFormatoDetalle);
 
@@ -378,7 +400,18 @@ public class PadronGuiFrame extends JFrame {
         return panel;
     }
 
+    private void estilizarHeaderTabla(JTable tabla) {
+        DefaultTableCellRenderer headerRenderer = new DefaultTableCellRenderer();
+        headerRenderer.setOpaque(true);
+        headerRenderer.setBackground(CR_AZUL_CLARO);
+        headerRenderer.setForeground(Color.BLACK);
+        headerRenderer.setHorizontalAlignment(SwingConstants.LEFT);
+        headerRenderer.setFont(tabla.getTableHeader().getFont().deriveFont(Font.BOLD, 13f));
+        headerRenderer.setBorder(BorderFactory.createLineBorder(CR_AZUL_OSCURO));
 
+        tabla.getTableHeader().setDefaultRenderer(headerRenderer);
+        tabla.getTableHeader().setReorderingAllowed(false);
+    }
 
     // ── Eventos ────────────────────────────────────────────────────────────
 
@@ -422,11 +455,8 @@ public class PadronGuiFrame extends JFrame {
         });
 
         btnAgregarSeleccionado.addActionListener(e -> agregarSeleccionado());
-
         btnQuitarSeleccionado.addActionListener(e -> quitarSeleccionado());
-
         btnLimpiarLista.addActionListener(e -> limpiarLista());
-
         btnExportarPdf.addActionListener(e -> exportarPdf());
 
         tblPadron.addMouseListener(new MouseAdapter() {
@@ -439,7 +469,7 @@ public class PadronGuiFrame extends JFrame {
         });
     }
 
-    // ── Lógica de negocio (sin cambios) ───────────────────────────────────
+    // ── Lógica de negocio ──────────────────────────────────────────────────
 
     private void cargarPagina(int paginaDeseada) {
         String criterio = txtBusqueda.getText().trim();
@@ -465,6 +495,7 @@ public class PadronGuiFrame extends JFrame {
                         paginaActual = 1;
                         lblResumenPadron.setText("Mostrando 0-0 de 0 registros | Página 1 de 1");
                         setEstadoError("error: " + data.getErrorMensaje());
+
                         JOptionPane.showMessageDialog(
                                 PadronGuiFrame.this,
                                 data.getErrorMensaje(),
@@ -482,17 +513,17 @@ public class PadronGuiFrame extends JFrame {
                     actualizarResumenPadron(data);
 
                     setEstadoListo("listo: página cargada");
-
                 } catch (Exception ex) {
                     padronTableModel.setFilas(new ArrayList<>());
                     totalPaginas = 1;
                     paginaActual = 1;
                     lblResumenPadron.setText("Mostrando 0-0 de 0 registros | Página 1 de 1");
-                    setEstadoError("error: backend no responde");
+                    setEstadoError("error: consulta fallida");
+
                     JOptionPane.showMessageDialog(
                             PadronGuiFrame.this,
                             construirMensajeError(ex),
-                            "Error de conexión",
+                            "Error de consulta",
                             JOptionPane.ERROR_MESSAGE
                     );
                 } finally {
@@ -694,13 +725,15 @@ public class PadronGuiFrame extends JFrame {
 
     private String construirMensajeError(Exception ex) {
         Throwable cause = ex.getCause() == null ? ex : ex.getCause();
+        String detalle = cause.getMessage() == null ? "(sin detalle)" : cause.getMessage();
 
         if (cause instanceof IOException) {
-            return "No se pudo conectar con el backend en http://localhost:8080.\n"
-                    + "Verifica que el servidor esté encendido e inténtalo de nuevo.";
+            return "Falló la consulta HTTP al backend.\n"
+                    + "El servidor podría estar apagado, o la URL/parámetros de búsqueda podrían ser inválidos.\n\n"
+                    + "Detalle técnico: " + detalle;
         }
 
-        return "Ocurrió un error inesperado.\nDetalle técnico: " + cause.getMessage();
+        return "Ocurrió un error inesperado.\nDetalle técnico: " + detalle;
     }
 
     // ── Estado con colores CR ──────────────────────────────────────────────
@@ -730,10 +763,12 @@ public class PadronGuiFrame extends JFrame {
 
             super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             setOpaque(true);
+
             if (!isSelected) {
                 setBackground(row % 2 == 0 ? Color.WHITE : new Color(227, 234, 246));
                 setForeground(Color.BLACK);
             }
+
             return this;
         }
     }
