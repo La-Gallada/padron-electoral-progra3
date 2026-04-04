@@ -38,6 +38,7 @@ import javax.swing.SwingWorker;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableCellRenderer;
+import padron.logica.ServicioCorreo;
 
 public class PadronGuiFrame extends JFrame {
 
@@ -72,6 +73,8 @@ public class PadronGuiFrame extends JFrame {
     private final JButton btnQuitarSeleccionado;
     private final JButton btnLimpiarLista;
     private final JButton btnExportarPdf;
+    private File ultimoPdfGenerado;
+    private final JButton btnEnviarCorreo;
     private final JComboBox<String> cmbFormatoDetalle;
     private final JLabel lblResumenSeleccionados;
 
@@ -108,6 +111,7 @@ public class PadronGuiFrame extends JFrame {
         btnQuitarSeleccionado = new JButton("Quitar seleccionado");
         btnLimpiarLista = new JButton("Limpiar lista");
         btnExportarPdf = new JButton("Exportar PDF");
+        btnEnviarCorreo = new JButton("Enviar correo");
         cmbFormatoDetalle = new JComboBox<>(new String[]{"JSON", "XML"});
 
         lblResumenPadron = new JLabel("Mostrando 0-0 de 0 registros | Página 1 de 1");
@@ -157,6 +161,7 @@ public class PadronGuiFrame extends JFrame {
 
         estilizarBotonSecundario(btnBuscar);
         estilizarBotonSecundario(btnAgregarSeleccionado);
+        estilizarBotonSecundario(btnEnviarCorreo);
 
         estilizarBotonNeutro(btnLimpiarBusqueda);
         estilizarBotonNeutro(btnAnterior);
@@ -383,6 +388,7 @@ public class PadronGuiFrame extends JFrame {
         botones.setOpaque(false);
         botones.add(btnQuitarSeleccionado);
         botones.add(btnLimpiarLista);
+        botones.add(btnEnviarCorreo);
         botones.add(btnExportarPdf);
 
         lblResumenSeleccionados.setForeground(CR_AZUL_MEDIO);
@@ -458,6 +464,7 @@ public class PadronGuiFrame extends JFrame {
         btnQuitarSeleccionado.addActionListener(e -> quitarSeleccionado());
         btnLimpiarLista.addActionListener(e -> limpiarLista());
         btnExportarPdf.addActionListener(e -> exportarPdf());
+        btnEnviarCorreo.addActionListener(e -> enviarCorreo());
 
         tblPadron.addMouseListener(new MouseAdapter() {
             @Override
@@ -669,6 +676,7 @@ public class PadronGuiFrame extends JFrame {
             );
             return;
         }
+        
 
         JFileChooser chooser = new JFileChooser();
         chooser.setDialogTitle("Guardar PDF");
@@ -694,13 +702,15 @@ public class PadronGuiFrame extends JFrame {
                     criterioActual,
                     formatoDetalle
             );
-
+            
+            ultimoPdfGenerado = destino;
             setEstadoListo("listo: PDF exportado");
             JOptionPane.showMessageDialog(
                     this,
                     "PDF generado correctamente en:\n" + destino.getAbsolutePath(),
                     "Exportación exitosa",
                     JOptionPane.INFORMATION_MESSAGE
+                    
             );
 
         } catch (IOException | DocumentException ex) {
@@ -713,6 +723,59 @@ public class PadronGuiFrame extends JFrame {
             );
         }
     }
+    private void enviarCorreo() {
+        if (ultimoPdfGenerado == null || !ultimoPdfGenerado.exists()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Primero debes generar el PDF antes de enviarlo por correo.",
+                    "Enviar correo",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+            return;
+        }
+
+        String destino = JOptionPane.showInputDialog(
+                this,
+                "Ingrese el correo destino:",
+                "Enviar correo",
+                JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (destino == null || destino.trim().isEmpty()) {
+            return;
+        }
+
+        try {
+            ServicioCorreo servicio = new ServicioCorreo(
+                    "sandijuan21@gmail.com",
+                    "kdfovuyurccmeynh"
+            );
+
+            servicio.enviarConAdjunto(
+                    destino,
+                    "Reporte del Padrón",
+                    "Adjunto encontrarás el PDF generado.",
+                    ultimoPdfGenerado
+            );
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Correo enviado correctamente.",
+                    "Éxito",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Error al enviar correo:\n" + ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+    
+    
 
     private void setUIConsultando(boolean consultando) {
         btnBuscar.setEnabled(!consultando);
