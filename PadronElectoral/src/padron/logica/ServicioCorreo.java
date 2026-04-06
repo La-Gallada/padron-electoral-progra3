@@ -24,6 +24,21 @@ public class ServicioCorreo {
     }
 
     public void enviarConAdjunto(String destino, String asunto, String mensaje, File archivo) throws Exception {
+        enviarConAdjunto(destino, null, null, asunto, mensaje, archivo);
+    }
+
+    public void enviarConAdjunto(String destino, String cc, String asunto, String mensaje, File archivo) throws Exception {
+        enviarConAdjunto(destino, cc, null, asunto, mensaje, archivo);
+    }
+
+    public void enviarConAdjunto(String destino, String cc, String cco, String asunto, String mensaje, File archivo) throws Exception {
+        if (destino == null || destino.trim().isEmpty()) {
+            throw new IllegalArgumentException("El correo destino es obligatorio.");
+        }
+
+        if (archivo == null || !archivo.exists() || !archivo.isFile()) {
+            throw new IllegalArgumentException("El archivo adjunto no existe o no es válido.");
+        }
 
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
@@ -31,8 +46,6 @@ public class ServicioCorreo {
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "587");
         props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
-
-
 
         Session session = Session.getInstance(props, new Authenticator() {
             @Override
@@ -45,14 +58,21 @@ public class ServicioCorreo {
 
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress(remitente));
-        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destino));
-        message.setSubject(asunto);
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destino.trim(), false));
 
-        // Texto
+        if (cc != null && !cc.trim().isEmpty()) {
+            message.setRecipients(Message.RecipientType.CC, InternetAddress.parse(cc.trim(), false));
+        }
+
+        if (cco != null && !cco.trim().isEmpty()) {
+            message.setRecipients(Message.RecipientType.BCC, InternetAddress.parse(cco.trim(), false));
+        }
+
+        message.setSubject(asunto == null ? "" : asunto);
+
         MimeBodyPart texto = new MimeBodyPart();
-        texto.setText(mensaje);
+        texto.setText(mensaje == null ? "" : mensaje);
 
-        // Archivo adjunto
         MimeBodyPart adjunto = new MimeBodyPart();
         adjunto.attachFile(archivo);
 

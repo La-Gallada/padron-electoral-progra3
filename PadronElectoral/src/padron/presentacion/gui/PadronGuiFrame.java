@@ -4,10 +4,15 @@ import com.itextpdf.text.DocumentException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -23,6 +28,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -42,15 +48,13 @@ import padron.logica.ServicioCorreo;
 
 public class PadronGuiFrame extends JFrame {
 
-    // ── PALETA BANDERA COSTA RICA ──────────────────────────────────────────
-    private static final Color CR_AZUL_OSCURO = new Color(0, 61, 165);      // #003DA5
-    private static final Color CR_AZUL_MEDIO = new Color(21, 101, 192);     // #1565C0
-    private static final Color CR_AZUL_CLARO = new Color(227, 234, 246);    // #E3EAF6
-    private static final Color CR_AZUL_FONDO = new Color(240, 244, 250);    // #F0F4FA
-    private static final Color CR_ROJO_OSCURO = new Color(200, 16, 46);     // #C8102E
-    private static final Color CR_ROJO_VIVO = new Color(229, 57, 53);       // #E53935
+    private static final Color CR_AZUL_OSCURO = new Color(0, 61, 165);
+    private static final Color CR_AZUL_MEDIO = new Color(21, 101, 192);
+    private static final Color CR_AZUL_CLARO = new Color(227, 234, 246);
+    private static final Color CR_AZUL_FONDO = new Color(240, 244, 250);
+    private static final Color CR_ROJO_OSCURO = new Color(200, 16, 46);
+    private static final Color CR_ROJO_VIVO = new Color(229, 57, 53);
     private static final Color CR_BLANCO = Color.WHITE;
-    // ──────────────────────────────────────────────────────────────────────
 
     private static final int TAMANO_PAGINA = 100;
 
@@ -130,8 +134,6 @@ public class PadronGuiFrame extends JFrame {
         cargarPagina(1);
     }
 
-    // ── Íconos de ventana ──────────────────────────────────────────────────
-
     private void configurarIconosVentana() {
         List<Image> iconos = new ArrayList<>();
 
@@ -154,7 +156,24 @@ public class PadronGuiFrame extends JFrame {
         }
     }
 
-    // ── Estilos de botones ─────────────────────────────────────────────────
+    private Image getBestAppIcon() {
+        URL url = getClass().getResource("/padron/presentacion/gui/resources/Logo128.png");
+        if (url != null) {
+            return new ImageIcon(url).getImage();
+        }
+
+        url = getClass().getResource("/padron/presentacion/gui/resources/Logo64.png");
+        if (url != null) {
+            return new ImageIcon(url).getImage();
+        }
+
+        url = getClass().getResource("/padron/presentacion/gui/resources/Logo32.png");
+        if (url != null) {
+            return new ImageIcon(url).getImage();
+        }
+
+        return null;
+    }
 
     private void estilizarBotones() {
         estilizarBotonPrimario(btnExportarPdf);
@@ -197,8 +216,6 @@ public class PadronGuiFrame extends JFrame {
         btn.setFont(btn.getFont().deriveFont(Font.PLAIN, 13f));
     }
 
-    // ── Construcción de UI ─────────────────────────────────────────────────
-
     private void construirUI() {
         JPanel root = new JPanel(new BorderLayout(0, 10));
         root.setBorder(new EmptyBorder(14, 14, 14, 14));
@@ -227,11 +244,6 @@ public class PadronGuiFrame extends JFrame {
         setContentPane(root);
     }
 
-    /**
-     * Barra decorativa con las franjas de la bandera de Costa Rica.
-     * Proporciones oficiales: azul(1) - blanco(1) - rojo(2) - blanco(1) - azul(1)
-     * Altura total: 18px.
-     */
     private JPanel construirBandera() {
         int[] pesos = {1, 1, 2, 1, 1};
         Color[] colores = {
@@ -419,8 +431,6 @@ public class PadronGuiFrame extends JFrame {
         tabla.getTableHeader().setReorderingAllowed(false);
     }
 
-    // ── Eventos ────────────────────────────────────────────────────────────
-
     private void configurarEventos() {
         btnBuscar.addActionListener(e -> {
             paginaActual = 1;
@@ -475,8 +485,6 @@ public class PadronGuiFrame extends JFrame {
             }
         });
     }
-
-    // ── Lógica de negocio ──────────────────────────────────────────────────
 
     private void cargarPagina(int paginaDeseada) {
         String criterio = txtBusqueda.getText().trim();
@@ -676,7 +684,6 @@ public class PadronGuiFrame extends JFrame {
             );
             return;
         }
-        
 
         JFileChooser chooser = new JFileChooser();
         chooser.setDialogTitle("Guardar PDF");
@@ -702,7 +709,7 @@ public class PadronGuiFrame extends JFrame {
                     criterioActual,
                     formatoDetalle
             );
-            
+
             ultimoPdfGenerado = destino;
             setEstadoListo("listo: PDF exportado");
             JOptionPane.showMessageDialog(
@@ -710,7 +717,6 @@ public class PadronGuiFrame extends JFrame {
                     "PDF generado correctamente en:\n" + destino.getAbsolutePath(),
                     "Exportación exitosa",
                     JOptionPane.INFORMATION_MESSAGE
-                    
             );
 
         } catch (IOException | DocumentException ex) {
@@ -723,6 +729,7 @@ public class PadronGuiFrame extends JFrame {
             );
         }
     }
+
     private void enviarCorreo() {
         if (ultimoPdfGenerado == null || !ultimoPdfGenerado.exists()) {
             JOptionPane.showMessageDialog(
@@ -734,14 +741,8 @@ public class PadronGuiFrame extends JFrame {
             return;
         }
 
-        String destino = JOptionPane.showInputDialog(
-                this,
-                "Ingrese el correo destino:",
-                "Enviar correo",
-                JOptionPane.QUESTION_MESSAGE
-        );
-
-        if (destino == null || destino.trim().isEmpty()) {
+        FormularioCorreoData datos = mostrarDialogoCorreo(this);
+        if (datos == null) {
             return;
         }
 
@@ -752,7 +753,9 @@ public class PadronGuiFrame extends JFrame {
             );
 
             servicio.enviarConAdjunto(
-                    destino,
+                    datos.destino,
+                    datos.cc,
+                    datos.cco,
                     "Reporte del Padrón",
                     "Adjunto encontrarás el PDF generado.",
                     ultimoPdfGenerado
@@ -774,8 +777,117 @@ public class PadronGuiFrame extends JFrame {
             );
         }
     }
-    
-    
+
+    private FormularioCorreoData mostrarDialogoCorreo(Window parent) {
+        JDialog dialog = new JDialog(this, "Enviar correo", Dialog.ModalityType.APPLICATION_MODAL);
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setResizable(false);
+
+        Image icono = getBestAppIcon();
+        if (icono != null) {
+            dialog.setIconImage(icono);
+        }
+
+        JPanel root = new JPanel(new BorderLayout(10, 10));
+        root.setBorder(new EmptyBorder(14, 14, 14, 14));
+        root.setBackground(CR_AZUL_FONDO);
+
+        JPanel form = new JPanel(new GridBagLayout());
+        form.setOpaque(false);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(6, 6, 6, 6);
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        JLabel lblPara = new JLabel("Para:");
+        JLabel lblCc = new JLabel("CC:");
+        JLabel lblCco = new JLabel("CCO:");
+
+        lblPara.setForeground(CR_AZUL_OSCURO);
+        lblCc.setForeground(CR_AZUL_OSCURO);
+        lblCco.setForeground(CR_AZUL_OSCURO);
+
+        JTextField txtPara = new JTextField(28);
+        JTextField txtCc = new JTextField(28);
+        JTextField txtCco = new JTextField(28);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 0;
+        form.add(lblPara, gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1;
+        form.add(txtPara, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 0;
+        form.add(lblCc, gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1;
+        form.add(txtCc, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.weightx = 0;
+        form.add(lblCco, gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1;
+        form.add(txtCco, gbc);
+
+        JLabel ayuda = new JLabel("Puedes escribir varios correos en CC y CCO separados por coma.");
+        ayuda.setForeground(CR_AZUL_MEDIO);
+
+        JButton btnCancelar = new JButton("Cancelar");
+        JButton btnEnviar = new JButton("Enviar");
+
+        estilizarBotonNeutro(btnCancelar);
+        estilizarBotonSecundario(btnEnviar);
+
+        final FormularioCorreoData[] resultado = new FormularioCorreoData[1];
+
+        btnCancelar.addActionListener(e -> dialog.dispose());
+
+        btnEnviar.addActionListener(e -> {
+            String para = txtPara.getText().trim();
+            String cc = txtCc.getText().trim();
+            String cco = txtCco.getText().trim();
+
+            if (para.isEmpty()) {
+                JOptionPane.showMessageDialog(
+                        dialog,
+                        "El correo principal es obligatorio.",
+                        "Dato requerido",
+                        JOptionPane.WARNING_MESSAGE
+                );
+                txtPara.requestFocusInWindow();
+                return;
+            }
+
+            resultado[0] = new FormularioCorreoData(para, cc, cco);
+            dialog.dispose();
+        });
+
+        JPanel botones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
+        botones.setOpaque(false);
+        botones.add(btnCancelar);
+        botones.add(btnEnviar);
+
+        root.add(form, BorderLayout.NORTH);
+        root.add(ayuda, BorderLayout.CENTER);
+        root.add(botones, BorderLayout.SOUTH);
+
+        dialog.setContentPane(root);
+        dialog.pack();
+        dialog.setLocationRelativeTo(parent);
+        dialog.setVisible(true);
+
+        return resultado[0];
+    }
 
     private void setUIConsultando(boolean consultando) {
         btnBuscar.setEnabled(!consultando);
@@ -799,8 +911,6 @@ public class PadronGuiFrame extends JFrame {
         return "Ocurrió un error inesperado.\nDetalle técnico: " + detalle;
     }
 
-    // ── Estado con colores CR ──────────────────────────────────────────────
-
     private void setEstadoListo(String detalle) {
         lblEstado.setForeground(CR_AZUL_OSCURO);
         lblEstado.setText("Estado: " + detalle);
@@ -815,8 +925,6 @@ public class PadronGuiFrame extends JFrame {
         lblEstado.setForeground(CR_ROJO_OSCURO);
         lblEstado.setText("Estado: " + detalle);
     }
-
-    // ── Renderer filas alternas ────────────────────────────────────────────
 
     private static class FilasAlternasRenderer extends DefaultTableCellRenderer {
         @Override
@@ -833,6 +941,18 @@ public class PadronGuiFrame extends JFrame {
             }
 
             return this;
+        }
+    }
+
+    private static class FormularioCorreoData {
+        private final String destino;
+        private final String cc;
+        private final String cco;
+
+        private FormularioCorreoData(String destino, String cc, String cco) {
+            this.destino = destino;
+            this.cc = cc;
+            this.cco = cco;
         }
     }
 }
