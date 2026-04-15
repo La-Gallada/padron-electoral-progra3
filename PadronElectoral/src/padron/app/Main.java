@@ -11,6 +11,11 @@ import padron.presentacion.tcp.TcpServer;
 public final class Main {
 
     public static void main(String[] args) {
+
+        // Abrir vista
+        Vista vista = new Vista();
+        vista.setVisible(true);
+
         try {
             RepositorioDistelec repoDistelec = new RepositorioDistelecTxt(
                     AppConfig.DISTELEC_PATH,
@@ -18,9 +23,7 @@ public final class Main {
             );
             repoDistelec.cargar();
 
-            // IMPORTANTE:
-            // Ya NO se llama repoPadron.cargar() aquí.
-            // El padrón se trabajará bajo demanda.
+            // El padrón se trabaja bajo demanda
             RepositorioPadron repoPadron = new RepositorioPadronTxt(
                     AppConfig.PADRON_PATH,
                     AppConfig.TXT_SEPARATOR
@@ -28,8 +31,17 @@ public final class Main {
 
             ServicioPadron servicio = new ServicioPadron(repoPadron, repoDistelec);
 
-            TcpServer tcp = new TcpServer(AppConfig.TCP_PORT, AppConfig.TCP_POOL_SIZE, servicio);
-            HttpServerApp http = new HttpServerApp(AppConfig.HTTP_PORT, AppConfig.HTTP_POOL_SIZE, servicio);
+            TcpServer tcp = new TcpServer(
+                    AppConfig.TCP_PORT,
+                    AppConfig.TCP_POOL_SIZE,
+                    servicio
+            );
+
+            HttpServerApp http = new HttpServerApp(
+                    AppConfig.HTTP_PORT,
+                    AppConfig.HTTP_POOL_SIZE,
+                    servicio
+            );
 
             tcp.start();
             http.start();
