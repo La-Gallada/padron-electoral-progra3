@@ -12,20 +12,18 @@ public final class Main {
 
     public static void main(String[] args) {
         try {
-            // 1) Datos
             RepositorioDistelec repoDistelec = new RepositorioDistelecTxt(
-                    AppConfig.DISTELEC_PATH, AppConfig.DISTELEC_SEPARATOR
+                    AppConfig.DISTELEC_PATH, AppConfig.TXT_SEPARATOR
             );
-            repoDistelec.cargar(); // carga Map en memoria
+            repoDistelec.cargar();
 
-            RepositorioPadron repoPadron = new RepositorioPadronTxt(
-                    AppConfig.PADRON_PATH, AppConfig.PADRON_SEPARATOR
+            RepositorioPadronTxt repoPadron = new RepositorioPadronTxt(
+                    AppConfig.PADRON_PATH, AppConfig.TXT_SEPARATOR
             );
+            repoPadron.cargar(); // <-- importante: cargar en memoria una sola vez
 
-            // 2) Lógica (única para TCP y HTTP)
-            ServicioPadron servicio = new ServicioPadron(repoPadron, repoDistelec);
+            ServicioPadron servicio = new ServicioPadron((RepositorioPadron) repoPadron, repoDistelec);
 
-            // 3) Servidores
             TcpServer tcp = new TcpServer(AppConfig.TCP_PORT, AppConfig.TCP_POOL_SIZE, servicio);
             HttpServerApp http = new HttpServerApp(AppConfig.HTTP_PORT, AppConfig.HTTP_POOL_SIZE, servicio);
 
@@ -37,7 +35,6 @@ public final class Main {
             System.out.println("   HTTP : http://localhost:" + AppConfig.HTTP_PORT);
 
         } catch (Exception ex) {
-            // Si falla el arranque, se muestra error claro
             System.err.println("❌ Error iniciando PadronElectoral: " + ex.getMessage());
             ex.printStackTrace();
         }

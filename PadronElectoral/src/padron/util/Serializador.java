@@ -65,6 +65,8 @@ public final class Serializador {
             sb.append(",\"tamanoPagina\":").append(r.getTamanoPagina());
             sb.append(",\"totalResultados\":").append(r.getTotalResultados());
             sb.append(",\"totalPaginas\":").append(r.getTotalPaginas());
+            sb.append(",\"ordenarPor\":").append(Escapes.quoteJson(r.getOrdenarPor()));
+            sb.append(",\"direccion\":").append(Escapes.quoteJson(r.getDireccion()));
             sb.append(",\"resultados\":").append(personasJson(r.getResultados()));
         } else {
             sb.append(",\"error\":").append(errorJson(r.getError()));
@@ -88,6 +90,8 @@ public final class Serializador {
             sb.append("<tamanoPagina>").append(r.getTamanoPagina()).append("</tamanoPagina>");
             sb.append("<totalResultados>").append(r.getTotalResultados()).append("</totalResultados>");
             sb.append("<totalPaginas>").append(r.getTotalPaginas()).append("</totalPaginas>");
+            sb.append("<ordenarPor>").append(Escapes.xml(r.getOrdenarPor())).append("</ordenarPor>");
+            sb.append("<direccion>").append(Escapes.xml(r.getDireccion())).append("</direccion>");
             sb.append("<resultados>");
 
             for (PersonaDTO p : r.getResultados()) {

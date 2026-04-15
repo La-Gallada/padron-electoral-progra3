@@ -38,123 +38,130 @@ public class ServicioPadron {
 
         if (!CedulaNormalizer.esValida(cedulaNormalizada)) {
             return RespuestaPadron.error(
-                "CEDULA_INVALIDA",
-                "La cédula no es válida: " + solicitud.getCedula()
+                    "CEDULA_INVALIDA",
+                    "La cédula no es válida: " + solicitud.getCedula()
             );
         }
 
         Optional<Persona> personaOpt;
-
         try {
             personaOpt = repoPadron.buscarPorCedula(cedulaNormalizada);
         } catch (Exception e) {
             return RespuestaPadron.error(
-                "ERROR_PADRON",
-                "Error consultando el padrón: " + e.getMessage()
+                    "ERROR_PADRON",
+                    "Error consultando el padrón: " + e.getMessage()
             );
         }
 
         if (personaOpt.isEmpty()) {
             return RespuestaPadron.error(
-                "CEDULA_NO_ENCONTRADA",
-                "No se encontró la cédula: " + cedulaNormalizada
+                    "CEDULA_NO_ENCONTRADA",
+                    "No se encontró la cédula: " + cedulaNormalizada
             );
         }
 
         Persona persona = personaOpt.get();
-        Optional<Direccion> direccionOpt;
 
+        Optional<Direccion> direccionOpt;
         try {
             direccionOpt = repoDistelec.buscarPorCodElec(persona.getCodElec());
         } catch (Exception e) {
             return RespuestaPadron.error(
-                "ERROR_DISTELEC",
-                "Error consultando distelec: " + e.getMessage()
+                    "ERROR_DISTELEC",
+                    "Error consultando distelec: " + e.getMessage()
             );
         }
 
         PersonaDTO personaDTO = new PersonaDTO(
-            persona.getCedula(),
-            persona.getNombre(),
-            persona.getPrimerApellido(),
-            persona.getSegundoApellido(),
-            persona.getCodElec()
+                persona.getCedula(),
+                persona.getNombre(),
+                persona.getPrimerApellido(),
+                persona.getSegundoApellido(),
+                persona.getCodElec()
         );
 
         DireccionDTO direccionDTO = null;
-
         if (direccionOpt.isPresent()) {
             Direccion dir = direccionOpt.get();
             direccionDTO = new DireccionDTO(
-                dir.getProvincia(),
-                dir.getCanton(),
-                dir.getDistrito(),
-                dir.getRecinto()
+                    dir.getProvincia(),
+                    dir.getCanton(),
+                    dir.getDistrito(),
+                    dir.getRecinto()
             );
         }
 
         return RespuestaPadron.ok(personaDTO, direccionDTO);
     }
 
-    public PadronPageResponse explorar(String criterio, int pagina, int tamano) {
+    public PadronPageResponse explorar(String criterio, int pagina, int tamano, String ordenarPor, String direccion) {
         if (pagina < 1) {
             return PadronPageResponse.error(
-                "PAGINA_INVALIDA",
-                "La página debe ser mayor o igual a 1."
+                    "PAGINA_INVALIDA",
+                    "La página debe ser mayor o igual a 1."
             );
         }
 
         if (tamano < 1 || tamano > 500) {
             return PadronPageResponse.error(
-                "TAMANO_INVALIDO",
-                "El tamaño de página debe estar entre 1 y 500."
+                    "TAMANO_INVALIDO",
+                    "El tamaño de página debe estar entre 1 y 500."
             );
         }
 
         try {
             String criterioLimpio = criterio == null ? "" : criterio.trim();
-            boolean filtrado = !criterioLimpio.isEmpty();
 
-            int totalResultados = filtrado
-                ? repoPadron.contarPorNombre(criterioLimpio)
-                : repoPadron.contarTotal();
+            int totalResultados = criterioLimpio.isEmpty()
+                    ? repoPadron.contarTotal()
+                    : repoPadron.contarPorNombre(criterioLimpio);
 
             int totalPaginas = totalResultados == 0
-                ? 1
-                : (int) Math.ceil((double) totalResultados / tamano);
+                    ? 1
+                    : (int) Math.ceil((double) totalResultados / tamano);
 
             int paginaAUsar = Math.min(pagina, totalPaginas);
             int offset = (paginaAUsar - 1) * tamano;
 
-            List<Persona> personas = filtrado
-                ? repoPadron.buscarPorNombrePaginado(criterioLimpio, offset, tamano)
-                : repoPadron.listarPaginado(offset, tamano);
+            List<Persona> personas = repoPadron.explorarPaginado(
+                    criterioLimpio,
+                    offset,
+                    tamano,
+                    ordenarPor,
+                    direccion
+            );
 
             List<PersonaDTO> resultados = new ArrayList<>();
-
             for (Persona persona : personas) {
                 resultados.add(new PersonaDTO(
-                    persona.getCedula(),
-                    persona.getNombre(),
-                    persona.getPrimerApellido(),
-                    persona.getSegundoApellido(),
-                    persona.getCodElec()
+                        persona.getCedula(),
+                        persona.getNombre(),
+                        persona.getPrimerApellido(),
+                        persona.getSegundoApellido(),
+                        persona.getCodElec()
                 ));
             }
 
             return PadronPageResponse.ok(
-                resultados,
-                totalResultados,
-                paginaAUsar,
-                tamano,
-                totalPaginas,
-                criterioLimpio
+                    resultados,
+                    totalResultados,
+                    paginaAUsar,
+                    tamano,
+                    totalPaginas,
+                    criterioLimpio,
+                    ordenarPor,
+                    direccion
             );
+
         } catch (Exception e) {
             return PadronPageResponse.error(
-                "ERROR_EXPLORACION",
-                "Error explorando el padrón: " + e.getMessage()
+                    "ERROR_EXPLORACION",
+                    "Error explorando el padrón: " + e.getMessage()
             );
         }
+    }
+
+    public PadronPageResponse explorar(String criterio, int pagina, int tamano) {
+        return explorar(criterio, pagina, tamano, "cedula", "asc");
     }
 }

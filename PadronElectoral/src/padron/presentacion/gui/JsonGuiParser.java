@@ -33,6 +33,8 @@ public final class JsonGuiParser {
         int tamanoPagina = extractInt(json, "tamanoPagina", 100);
         int totalResultados = extractInt(json, "totalResultados", 0);
         int totalPaginas = extractInt(json, "totalPaginas", 1);
+        String ordenarPor = extractString(json, "ordenarPor");
+        String direccion = extractString(json, "direccion");
 
         String arrayResultados = extractArray(json, "resultados");
         List<PadronRow> filas = new ArrayList<>();
@@ -55,6 +57,8 @@ public final class JsonGuiParser {
                 tamanoPagina,
                 totalResultados,
                 totalPaginas,
+                ordenarPor,
+                direccion,
                 filas
         );
     }

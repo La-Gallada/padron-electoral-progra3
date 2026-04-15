@@ -16,34 +16,56 @@ public class RepositorioPadronTxt implements RepositorioPadron {
     private final Path path;
     private final String sep;
 
+    private final List<Persona> personas = new ArrayList<>();
+    private boolean cargado = false;
+
     public RepositorioPadronTxt(Path path, String sep) {
         this.path = path;
         this.sep = sep;
     }
 
-    @Override
-    public Optional<Persona> buscarPorCedula(String cedulaNormalizada) {
+    public synchronized void cargar() {
+        if (cargado) {
+            return;
+        }
+
+        personas.clear();
+
         try (BufferedReader br = Files.newBufferedReader(path, StandardCharsets.ISO_8859_1)) {
             String linea;
 
             while ((linea = br.readLine()) != null) {
                 String[] campos = linea.split("\\" + sep, -1);
 
-                // Formato real:
-                // [0]=cedula, [1]=codElec, [5]=nombre, [6]=primerApellido, [7]=segundoApellido
                 if (campos.length < 8) {
                     continue;
                 }
 
-                String cedulaArchivo = campos[0].trim();
-
-                if (cedulaArchivo.equals(cedulaNormalizada)) {
-                    return Optional.of(crearPersona(campos));
-                }
+                personas.add(crearPersona(campos));
             }
 
+            cargado = true;
+            System.out.println("✅ Padrón cargado en memoria: " + personas.size() + " registros");
+
         } catch (IOException e) {
-            throw new RuntimeException("Error leyendo padrón: " + e.getMessage(), e);
+            throw new RuntimeException("Error cargando padrón: " + e.getMessage(), e);
+        }
+    }
+
+    private void asegurarCarga() {
+        if (!cargado) {
+            cargar();
+        }
+    }
+
+    @Override
+    public Optional<Persona> buscarPorCedula(String cedulaNormalizada) {
+        asegurarCarga();
+
+        for (Persona persona : personas) {
+            if (persona.getCedula().equals(cedulaNormalizada)) {
+                return Optional.of(persona);
+            }
         }
 
         return Optional.empty();
@@ -51,65 +73,41 @@ public class RepositorioPadronTxt implements RepositorioPadron {
 
     @Override
     public List<Persona> listarPaginado(int offset, int limit) {
-        List<Persona> resultados = new ArrayList<>();
-
-        if (offset < 0 || limit <= 0) {
-            return resultados;
-        }
-
-        try (BufferedReader br = Files.newBufferedReader(path, StandardCharsets.ISO_8859_1)) {
-            String linea;
-            int indiceValido = 0;
-
-            while ((linea = br.readLine()) != null) {
-                String[] campos = linea.split("\\" + sep, -1);
-
-                if (campos.length < 8) {
-                    continue;
-                }
-
-                if (indiceValido >= offset && resultados.size() < limit) {
-                    resultados.add(crearPersona(campos));
-                }
-
-                indiceValido++;
-
-                if (resultados.size() >= limit) {
-                    break;
-                }
-            }
-
-        } catch (IOException e) {
-            throw new RuntimeException("Error listando padrón: " + e.getMessage(), e);
-        }
-
-        return resultados;
+        return explorarPaginado("", offset, limit, "cedula", "asc");
     }
 
     @Override
     public int contarTotal() {
+        asegurarCarga();
+        return personas.size();
+    }
+
+    @Override
+    public List<Persona> buscarPorNombrePaginado(String termino, int offset, int limit) {
+        return explorarPaginado(termino, offset, limit, "cedula", "asc");
+    }
+
+    @Override
+    public int contarPorNombre(String termino) {
+        asegurarCarga();
+
+        String terminoNormalizado = normalizarTexto(termino);
+        String terminoSoloDigitos = soloDigitos(termino);
         int total = 0;
 
-        try (BufferedReader br = Files.newBufferedReader(path, StandardCharsets.ISO_8859_1)) {
-            String linea;
-
-            while ((linea = br.readLine()) != null) {
-                String[] campos = linea.split("\\" + sep, -1);
-
-                if (campos.length >= 8) {
-                    total++;
-                }
+        for (Persona persona : personas) {
+            if (coincide(persona, terminoNormalizado, terminoSoloDigitos)) {
+                total++;
             }
-
-        } catch (IOException e) {
-            throw new RuntimeException("Error contando padrón: " + e.getMessage(), e);
         }
 
         return total;
     }
 
     @Override
-    public List<Persona> buscarPorNombrePaginado(String termino, int offset, int limit) {
+    public List<Persona> explorarPaginado(String termino, int offset, int limit, String ordenarPor, String direccion) {
+        asegurarCarga();
+
         List<Persona> resultados = new ArrayList<>();
 
         if (offset < 0 || limit <= 0) {
@@ -118,78 +116,45 @@ public class RepositorioPadronTxt implements RepositorioPadron {
 
         String terminoNormalizado = normalizarTexto(termino);
         String terminoSoloDigitos = soloDigitos(termino);
+        boolean sinFiltro = terminoNormalizado.isEmpty() && terminoSoloDigitos.isEmpty();
 
-        try (BufferedReader br = Files.newBufferedReader(path, StandardCharsets.ISO_8859_1)) {
-            String linea;
-            int indiceCoincidencia = 0;
+        int vistos = 0;
 
-            while ((linea = br.readLine()) != null) {
-                String[] campos = linea.split("\\" + sep, -1);
+        for (Persona persona : personas) {
+            boolean coincide = sinFiltro || coincide(persona, terminoNormalizado, terminoSoloDigitos);
 
-                if (campos.length < 8) {
-                    continue;
-                }
-
-                String cedula = campos[0].trim();
-                String nombreCompleto = construirNombreCompleto(campos);
-                String nombreNormalizado = normalizarTexto(nombreCompleto);
-
-                boolean coincideNombre = nombreNormalizado.contains(terminoNormalizado);
-                boolean coincideCedula = !terminoSoloDigitos.isEmpty() && cedula.contains(terminoSoloDigitos);
-
-                if (coincideNombre || coincideCedula) {
-                    if (indiceCoincidencia >= offset && resultados.size() < limit) {
-                        resultados.add(crearPersona(campos));
-                    }
-
-                    indiceCoincidencia++;
-                }
-
-                if (resultados.size() >= limit) {
-                    break;
-                }
+            if (!coincide) {
+                continue;
             }
 
-        } catch (IOException e) {
-            throw new RuntimeException("Error buscando por nombre o cédula en padrón: " + e.getMessage(), e);
+            if (vistos >= offset && resultados.size() < limit) {
+                resultados.add(persona);
+            }
+
+            vistos++;
+
+            if (resultados.size() >= limit) {
+                break;
+            }
         }
 
         return resultados;
     }
 
-    @Override
-    public int contarPorNombre(String termino) {
-        String terminoNormalizado = normalizarTexto(termino);
-        String terminoSoloDigitos = soloDigitos(termino);
-        int total = 0;
+    private boolean coincide(Persona persona, String terminoNormalizado, String terminoSoloDigitos) {
+        String nombreCompleto = persona.getNombre() + " "
+                + persona.getPrimerApellido() + " "
+                + persona.getSegundoApellido();
 
-        try (BufferedReader br = Files.newBufferedReader(path, StandardCharsets.ISO_8859_1)) {
-            String linea;
+        String nombreNormalizado = normalizarTexto(nombreCompleto);
 
-            while ((linea = br.readLine()) != null) {
-                String[] campos = linea.split("\\" + sep, -1);
+        boolean coincideNombre = !terminoNormalizado.isEmpty()
+                && nombreNormalizado.contains(terminoNormalizado);
 
-                if (campos.length < 8) {
-                    continue;
-                }
+        boolean coincideCedula = !terminoSoloDigitos.isEmpty()
+                && persona.getCedula().contains(terminoSoloDigitos);
 
-                String cedula = campos[0].trim();
-                String nombreCompleto = construirNombreCompleto(campos);
-                String nombreNormalizado = normalizarTexto(nombreCompleto);
-
-                boolean coincideNombre = nombreNormalizado.contains(terminoNormalizado);
-                boolean coincideCedula = !terminoSoloDigitos.isEmpty() && cedula.contains(terminoSoloDigitos);
-
-                if (coincideNombre || coincideCedula) {
-                    total++;
-                }
-            }
-
-        } catch (IOException e) {
-            throw new RuntimeException("Error contando resultados por nombre o cédula: " + e.getMessage(), e);
-        }
-
-        return total;
+        return coincideNombre || coincideCedula;
     }
 
     private Persona crearPersona(String[] campos) {
@@ -200,10 +165,6 @@ public class RepositorioPadronTxt implements RepositorioPadron {
                 campos[7].trim(),
                 campos[1].trim()
         );
-    }
-
-    private String construirNombreCompleto(String[] campos) {
-        return campos[5].trim() + " " + campos[6].trim() + " " + campos[7].trim();
     }
 
     private String normalizarTexto(String texto) {
