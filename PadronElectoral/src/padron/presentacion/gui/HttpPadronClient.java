@@ -12,8 +12,8 @@ import java.nio.charset.StandardCharsets;
 
 public class HttpPadronClient {
 
-    private static final int CONNECT_TIMEOUT_MS = 5000;
-    private static final int READ_TIMEOUT_MS = 30000;
+    private static final int CONNECT_TIMEOUT_MS = 10000;
+    private static final int READ_TIMEOUT_MS = 180000;
 
     private final String baseUrl;
 

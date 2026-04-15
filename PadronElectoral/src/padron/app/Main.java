@@ -13,16 +13,20 @@ public final class Main {
     public static void main(String[] args) {
         try {
             RepositorioDistelec repoDistelec = new RepositorioDistelecTxt(
-                    AppConfig.DISTELEC_PATH, AppConfig.TXT_SEPARATOR
+                    AppConfig.DISTELEC_PATH,
+                    AppConfig.TXT_SEPARATOR
             );
             repoDistelec.cargar();
 
-            RepositorioPadronTxt repoPadron = new RepositorioPadronTxt(
-                    AppConfig.PADRON_PATH, AppConfig.TXT_SEPARATOR
+            // IMPORTANTE:
+            // Ya NO se llama repoPadron.cargar() aquí.
+            // El padrón se trabajará bajo demanda.
+            RepositorioPadron repoPadron = new RepositorioPadronTxt(
+                    AppConfig.PADRON_PATH,
+                    AppConfig.TXT_SEPARATOR
             );
-            repoPadron.cargar(); // <-- importante: cargar en memoria una sola vez
 
-            ServicioPadron servicio = new ServicioPadron((RepositorioPadron) repoPadron, repoDistelec);
+            ServicioPadron servicio = new ServicioPadron(repoPadron, repoDistelec);
 
             TcpServer tcp = new TcpServer(AppConfig.TCP_PORT, AppConfig.TCP_POOL_SIZE, servicio);
             HttpServerApp http = new HttpServerApp(AppConfig.HTTP_PORT, AppConfig.HTTP_POOL_SIZE, servicio);
