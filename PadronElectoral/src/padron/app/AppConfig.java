@@ -7,7 +7,7 @@ public final class AppConfig {
 
     private AppConfig() {}
 
-    // Rutas (recomendado: carpeta /data en el repo)
+    // Rutas
     public static final Path PADRON_PATH = Paths.get("data", "PADRON.txt");
     public static final Path DISTELEC_PATH = Paths.get("data", "distelec.txt");
 
@@ -19,10 +19,9 @@ public final class AppConfig {
     public static final int TCP_POOL_SIZE = 20;
     public static final int HTTP_POOL_SIZE = 20;
 
-    // Parsing TXT
-    public static final String PADRON_SEPARATOR = ",";
-    public static final String DISTELEC_SEPARATOR = ",";
+    // Separador de archivos TXT
+    public static final String TXT_SEPARATOR = ",";
 
-    // Cache (si luego implementan LRU)
+    // Cache
     public static final int PADRON_CACHE_SIZE = 500;
 }

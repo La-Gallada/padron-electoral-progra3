@@ -108,6 +108,8 @@ public class PadronHttpHandler implements HttpHandler {
         String criterio = params.getOrDefault("criterio", "").trim();
         int pagina = parsearEnteroPositivo(params.get("pagina"), 1);
         int tamano = parsearEnteroPositivo(params.get("tamano"), 100);
+        String ordenarPor = params.getOrDefault("ordenarPor", "cedula").trim();
+        String direccion = params.getOrDefault("direccion", "asc").trim();
 
         String formatoRaw = params.getOrDefault("format", params.getOrDefault("formato", "JSON"));
         FormatoSalida formato = parsearFormato(formatoRaw);
@@ -122,7 +124,7 @@ public class PadronHttpHandler implements HttpHandler {
             return;
         }
 
-        PadronPageResponse respuesta = servicio.explorar(criterio, pagina, tamano);
+        PadronPageResponse respuesta = servicio.explorar(criterio, pagina, tamano, ordenarPor, direccion);
         int status = respuesta.isOk() ? 200 : mapearStatusPagina(respuesta);
         String cuerpo = serializarPagina(respuesta, formato);
 

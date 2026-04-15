@@ -20,7 +20,9 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +69,10 @@ public class PadronGuiFrame extends JFrame {
     private final JButton btnAnterior;
     private final JButton btnSiguiente;
     private final JButton btnAgregarSeleccionado;
+    private final JTextField txtPaginaIr;
+    private final JButton btnIrPagina;
+    private final JComboBox<String> cmbOrdenarPor;
+    private final JComboBox<String> cmbDireccionOrden;
 
     private final JTable tblPadron;
     private final PadronTableModel padronTableModel;
@@ -96,18 +102,24 @@ public class PadronGuiFrame extends JFrame {
 
         setTitle("Padrón Electoral - Explorador y Exportación PDF");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setMinimumSize(new Dimension(1200, 700));
+        setMinimumSize(new Dimension(1280, 760));
 
         padronTableModel = new PadronTableModel();
         seleccionadosTableModel = new SeleccionadosTableModel();
 
-        txtBusqueda = new JTextField(26);
+        txtBusqueda = new JTextField(22);
         btnBuscar = new JButton("Buscar");
         btnLimpiarBusqueda = new JButton("Limpiar");
 
         btnAnterior = new JButton("Anterior");
         btnSiguiente = new JButton("Siguiente");
         btnAgregarSeleccionado = new JButton("Agregar seleccionado");
+
+        txtPaginaIr = new JTextField("1", 4);
+        btnIrPagina = new JButton("Ir");
+
+        cmbOrdenarPor = new JComboBox<>(new String[]{"Cédula", "Apellido", "Nombre"});
+        cmbDireccionOrden = new JComboBox<>(new String[]{"Ascendente", "Descendente"});
 
         tblPadron = new JTable(padronTableModel);
         tblSeleccionados = new JTable(seleccionadosTableModel);
@@ -128,7 +140,7 @@ public class PadronGuiFrame extends JFrame {
         configurarEventos();
 
         pack();
-        setSize(1260, 760);
+        setSize(1320, 780);
         setLocationRelativeTo(null);
 
         cargarPagina(1);
@@ -136,7 +148,6 @@ public class PadronGuiFrame extends JFrame {
 
     private void configurarIconosVentana() {
         List<Image> iconos = new ArrayList<>();
-
         agregarIcono(iconos, "/padron/presentacion/gui/resources/Logo16.png");
         agregarIcono(iconos, "/padron/presentacion/gui/resources/Logo32.png");
         agregarIcono(iconos, "/padron/presentacion/gui/resources/Logo64.png");
@@ -158,20 +169,11 @@ public class PadronGuiFrame extends JFrame {
 
     private Image getBestAppIcon() {
         URL url = getClass().getResource("/padron/presentacion/gui/resources/Logo128.png");
-        if (url != null) {
-            return new ImageIcon(url).getImage();
-        }
-
+        if (url != null) return new ImageIcon(url).getImage();
         url = getClass().getResource("/padron/presentacion/gui/resources/Logo64.png");
-        if (url != null) {
-            return new ImageIcon(url).getImage();
-        }
-
+        if (url != null) return new ImageIcon(url).getImage();
         url = getClass().getResource("/padron/presentacion/gui/resources/Logo32.png");
-        if (url != null) {
-            return new ImageIcon(url).getImage();
-        }
-
+        if (url != null) return new ImageIcon(url).getImage();
         return null;
     }
 
@@ -181,6 +183,7 @@ public class PadronGuiFrame extends JFrame {
         estilizarBotonSecundario(btnBuscar);
         estilizarBotonSecundario(btnAgregarSeleccionado);
         estilizarBotonSecundario(btnEnviarCorreo);
+        estilizarBotonSecundario(btnIrPagina);
 
         estilizarBotonNeutro(btnLimpiarBusqueda);
         estilizarBotonNeutro(btnAnterior);
@@ -226,7 +229,7 @@ public class PadronGuiFrame extends JFrame {
                 construirPanelIzquierdo(),
                 construirPanelDerecho()
         );
-        splitPane.setResizeWeight(0.68);
+        splitPane.setResizeWeight(0.70);
 
         JPanel panelEstado = new JPanel(new BorderLayout());
         panelEstado.setBackground(CR_AZUL_FONDO);
@@ -247,16 +250,9 @@ public class PadronGuiFrame extends JFrame {
     private JPanel construirBandera() {
         int[] pesos = {1, 1, 2, 1, 1};
         Color[] colores = {
-            CR_AZUL_OSCURO,
-            CR_BLANCO,
-            CR_ROJO_OSCURO,
-            CR_BLANCO,
-            CR_AZUL_OSCURO
+            CR_AZUL_OSCURO, CR_BLANCO, CR_ROJO_OSCURO, CR_BLANCO, CR_AZUL_OSCURO
         };
         int total = 6;
-
-        JPanel bandera = new JPanel(null);
-        bandera.setPreferredSize(new Dimension(0, 18));
 
         JPanel franjas = new JPanel() {
             @Override
@@ -283,7 +279,6 @@ public class PadronGuiFrame extends JFrame {
         for (Color color : colores) {
             JPanel franja = new JPanel();
             franja.setBackground(color);
-            franja.setOpaque(true);
             franjas.add(franja);
         }
 
@@ -302,7 +297,7 @@ public class PadronGuiFrame extends JFrame {
         titulo.setFont(titulo.getFont().deriveFont(Font.BOLD, 16f));
         titulo.setForeground(CR_AZUL_OSCURO);
 
-        JLabel ayuda = new JLabel("Deja el campo vacío para explorar todo el padrón o escribe nombre/cédula para filtrar.");
+        JLabel ayuda = new JLabel("Explora el padrón, busca por nombre/cédula, ordena la página actual y salta a la página que necesites.");
         ayuda.setForeground(CR_AZUL_MEDIO);
 
         JPanel topInfo = new JPanel(new BorderLayout());
@@ -313,11 +308,12 @@ public class PadronGuiFrame extends JFrame {
         JPanel panelBusqueda = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 8));
         panelBusqueda.setOpaque(false);
 
-        JLabel lblNombreCedula = new JLabel("Nombre o cédula:");
-        lblNombreCedula.setForeground(CR_AZUL_OSCURO);
-
-        panelBusqueda.add(lblNombreCedula);
+        panelBusqueda.add(new JLabel("Nombre o cédula:"));
         panelBusqueda.add(txtBusqueda);
+        panelBusqueda.add(new JLabel("Ordenar página por:"));
+        panelBusqueda.add(cmbOrdenarPor);
+        panelBusqueda.add(new JLabel("Dirección:"));
+        panelBusqueda.add(cmbDireccionOrden);
         panelBusqueda.add(btnBuscar);
         panelBusqueda.add(btnLimpiarBusqueda);
 
@@ -328,7 +324,7 @@ public class PadronGuiFrame extends JFrame {
 
         tblPadron.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblPadron.setRowHeight(24);
-        tblPadron.setAutoCreateRowSorter(true);
+        tblPadron.setAutoCreateRowSorter(false);
         tblPadron.setSelectionBackground(CR_ROJO_OSCURO);
         tblPadron.setSelectionForeground(CR_BLANCO);
         tblPadron.setDefaultRenderer(Object.class, new FilasAlternasRenderer());
@@ -349,6 +345,9 @@ public class PadronGuiFrame extends JFrame {
         nav.setOpaque(false);
         nav.add(btnAnterior);
         nav.add(btnSiguiente);
+        nav.add(new JLabel("Página:"));
+        nav.add(txtPaginaIr);
+        nav.add(btnIrPagina);
         nav.add(btnAgregarSeleccionado);
 
         bottom.add(lblResumenPadron, BorderLayout.NORTH);
@@ -389,11 +388,7 @@ public class PadronGuiFrame extends JFrame {
 
         JPanel formatoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
         formatoPanel.setOpaque(false);
-
-        JLabel lblFormato = new JLabel("Formato detalle PDF:");
-        lblFormato.setForeground(CR_AZUL_OSCURO);
-
-        formatoPanel.add(lblFormato);
+        formatoPanel.add(new JLabel("Formato detalle PDF:"));
         formatoPanel.add(cmbFormatoDetalle);
 
         JPanel botones = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
@@ -439,6 +434,8 @@ public class PadronGuiFrame extends JFrame {
 
         btnLimpiarBusqueda.addActionListener(e -> {
             txtBusqueda.setText("");
+            cmbOrdenarPor.setSelectedItem("Cédula");
+            cmbDireccionOrden.setSelectedItem("Ascendente");
             paginaActual = 1;
             cargarPagina(paginaActual);
         });
@@ -458,6 +455,9 @@ public class PadronGuiFrame extends JFrame {
             }
         });
 
+        cmbOrdenarPor.addActionListener(e -> ordenarPaginaActual());
+        cmbDireccionOrden.addActionListener(e -> ordenarPaginaActual());
+
         btnAnterior.addActionListener(e -> {
             if (paginaActual > 1) {
                 cargarPagina(paginaActual - 1);
@@ -469,6 +469,9 @@ public class PadronGuiFrame extends JFrame {
                 cargarPagina(paginaActual + 1);
             }
         });
+
+        btnIrPagina.addActionListener(e -> irAPagina());
+        txtPaginaIr.addActionListener(e -> irAPagina());
 
         btnAgregarSeleccionado.addActionListener(e -> agregarSeleccionado());
         btnQuitarSeleccionado.addActionListener(e -> quitarSeleccionado());
@@ -486,6 +489,29 @@ public class PadronGuiFrame extends JFrame {
         });
     }
 
+    private void irAPagina() {
+        String raw = txtPaginaIr.getText().trim();
+
+        if (raw.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Debes escribir un número de página.", "Página inválida", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        try {
+            int pagina = Integer.parseInt(raw);
+
+            if (pagina < 1 || pagina > totalPaginas) {
+                JOptionPane.showMessageDialog(this, "La página debe estar entre 1 y " + totalPaginas + ".", "Página fuera de rango", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            cargarPagina(pagina);
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Debes escribir un número válido de página.", "Página inválida", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
     private void cargarPagina(int paginaDeseada) {
         String criterio = txtBusqueda.getText().trim();
 
@@ -495,7 +521,14 @@ public class PadronGuiFrame extends JFrame {
         SwingWorker<PadronPageData, Void> worker = new SwingWorker<PadronPageData, Void>() {
             @Override
             protected PadronPageData doInBackground() throws Exception {
-                String json = client.explorar(criterio, paginaDeseada, TAMANO_PAGINA, "json");
+                String json = client.explorar(
+                        criterio,
+                        paginaDeseada,
+                        TAMANO_PAGINA,
+                        "json",
+                        "cedula",
+                        "asc"
+                );
                 return JsonGuiParser.parsePadronPage(json);
             }
 
@@ -508,6 +541,7 @@ public class PadronGuiFrame extends JFrame {
                         padronTableModel.setFilas(new ArrayList<>());
                         totalPaginas = 1;
                         paginaActual = 1;
+                        txtPaginaIr.setText("1");
                         lblResumenPadron.setText("Mostrando 0-0 de 0 registros | Página 1 de 1");
                         setEstadoError("error: " + data.getErrorMensaje());
 
@@ -525,13 +559,17 @@ public class PadronGuiFrame extends JFrame {
                     totalPaginas = data.getTotalPaginas();
 
                     padronTableModel.setFilas(data.getResultados());
-                    actualizarResumenPadron(data);
+                    ordenarPaginaActual();
 
+                    txtPaginaIr.setText(String.valueOf(paginaActual));
+                    actualizarResumenPadron(data);
                     setEstadoListo("listo: página cargada");
+
                 } catch (Exception ex) {
                     padronTableModel.setFilas(new ArrayList<>());
                     totalPaginas = 1;
                     paginaActual = 1;
+                    txtPaginaIr.setText("1");
                     lblResumenPadron.setText("Mostrando 0-0 de 0 registros | Página 1 de 1");
                     setEstadoError("error: consulta fallida");
 
@@ -548,6 +586,61 @@ public class PadronGuiFrame extends JFrame {
         };
 
         worker.execute();
+    }
+
+    private void ordenarPaginaActual() {
+        List<PadronRow> filas = new ArrayList<>();
+        for (int i = 0; i < padronTableModel.getRowCount(); i++) {
+            PadronRow fila = padronTableModel.getFila(i);
+            if (fila != null) {
+                filas.add(fila);
+            }
+        }
+
+        String criterio = String.valueOf(cmbOrdenarPor.getSelectedItem());
+        String direccion = String.valueOf(cmbDireccionOrden.getSelectedItem());
+
+        Comparator<PadronRow> comparator;
+
+        switch (criterio) {
+            case "Apellido":
+                comparator = Comparator
+                        .comparing((PadronRow r) -> normalizar(r.getPrimerApellido()))
+                        .thenComparing(r -> normalizar(r.getSegundoApellido()))
+                        .thenComparing(r -> normalizar(r.getNombre()))
+                        .thenComparing(PadronRow::getCedula);
+                break;
+
+            case "Nombre":
+                comparator = Comparator
+                        .comparing((PadronRow r) -> normalizar(r.getNombre()))
+                        .thenComparing(r -> normalizar(r.getPrimerApellido()))
+                        .thenComparing(r -> normalizar(r.getSegundoApellido()))
+                        .thenComparing(PadronRow::getCedula);
+                break;
+
+            case "Cédula":
+            default:
+                comparator = Comparator.comparing(PadronRow::getCedula);
+                break;
+        }
+
+        if ("Descendente".equals(direccion)) {
+            comparator = comparator.reversed();
+        }
+
+        filas.sort(comparator);
+        padronTableModel.setFilas(filas);
+    }
+
+    private String normalizar(String texto) {
+        if (texto == null) {
+            return "";
+        }
+        return Normalizer.normalize(texto, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "")
+                .toLowerCase()
+                .trim();
     }
 
     private void actualizarResumenPadron(PadronPageData data) {
@@ -569,12 +662,7 @@ public class PadronGuiFrame extends JFrame {
         int viewRow = tblPadron.getSelectedRow();
 
         if (viewRow < 0) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Debes seleccionar una persona del padrón.",
-                    "Agregar seleccionado",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
+            JOptionPane.showMessageDialog(this, "Debes seleccionar una persona del padrón.", "Agregar seleccionado", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 
@@ -586,12 +674,7 @@ public class PadronGuiFrame extends JFrame {
         }
 
         if (seleccionadosMap.containsKey(fila.getCedula())) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Esa persona ya está agregada en la lista.",
-                    "Registro duplicado",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
+            JOptionPane.showMessageDialog(this, "Esa persona ya está agregada en la lista.", "Registro duplicado", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 
@@ -631,12 +714,7 @@ public class PadronGuiFrame extends JFrame {
         int viewRow = tblSeleccionados.getSelectedRow();
 
         if (viewRow < 0) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Debes seleccionar una persona de la lista.",
-                    "Quitar seleccionado",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
+            JOptionPane.showMessageDialog(this, "Debes seleccionar una persona de la lista.", "Quitar seleccionado", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 
@@ -676,12 +754,7 @@ public class PadronGuiFrame extends JFrame {
 
     private void exportarPdf() {
         if (seleccionadosMap.isEmpty()) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "No hay personas seleccionadas para exportar.",
-                    "Exportar PDF",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
+            JOptionPane.showMessageDialog(this, "No hay personas seleccionadas para exportar.", "Exportar PDF", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 
@@ -732,12 +805,7 @@ public class PadronGuiFrame extends JFrame {
 
     private void enviarCorreo() {
         if (ultimoPdfGenerado == null || !ultimoPdfGenerado.exists()) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Primero debes generar el PDF antes de enviarlo por correo.",
-                    "Enviar correo",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
+            JOptionPane.showMessageDialog(this, "Primero debes generar el PDF antes de enviarlo por correo.", "Enviar correo", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 
@@ -761,20 +829,10 @@ public class PadronGuiFrame extends JFrame {
                     ultimoPdfGenerado
             );
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Correo enviado correctamente.",
-                    "Éxito",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
+            JOptionPane.showMessageDialog(this, "Correo enviado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Error al enviar correo:\n" + ex.getMessage(),
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE
-            );
+            JOptionPane.showMessageDialog(this, "Error al enviar correo:\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -804,39 +862,23 @@ public class PadronGuiFrame extends JFrame {
         JLabel lblCc = new JLabel("CC:");
         JLabel lblCco = new JLabel("CCO:");
 
-        lblPara.setForeground(CR_AZUL_OSCURO);
-        lblCc.setForeground(CR_AZUL_OSCURO);
-        lblCco.setForeground(CR_AZUL_OSCURO);
-
         JTextField txtPara = new JTextField(28);
         JTextField txtCc = new JTextField(28);
         JTextField txtCco = new JTextField(28);
 
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 0;
+        gbc.gridx = 0; gbc.gridy = 0; gbc.weightx = 0;
         form.add(lblPara, gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 1;
+        gbc.gridx = 1; gbc.weightx = 1;
         form.add(txtPara, gbc);
 
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.weightx = 0;
+        gbc.gridx = 0; gbc.gridy = 1; gbc.weightx = 0;
         form.add(lblCc, gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 1;
+        gbc.gridx = 1; gbc.weightx = 1;
         form.add(txtCc, gbc);
 
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.weightx = 0;
+        gbc.gridx = 0; gbc.gridy = 2; gbc.weightx = 0;
         form.add(lblCco, gbc);
-
-        gbc.gridx = 1;
-        gbc.weightx = 1;
+        gbc.gridx = 1; gbc.weightx = 1;
         form.add(txtCco, gbc);
 
         JLabel ayuda = new JLabel("Puedes escribir varios correos en CC y CCO separados por coma.");
@@ -858,12 +900,7 @@ public class PadronGuiFrame extends JFrame {
             String cco = txtCco.getText().trim();
 
             if (para.isEmpty()) {
-                JOptionPane.showMessageDialog(
-                        dialog,
-                        "El correo principal es obligatorio.",
-                        "Dato requerido",
-                        JOptionPane.WARNING_MESSAGE
-                );
+                JOptionPane.showMessageDialog(dialog, "El correo principal es obligatorio.", "Dato requerido", JOptionPane.WARNING_MESSAGE);
                 txtPara.requestFocusInWindow();
                 return;
             }
@@ -894,6 +931,10 @@ public class PadronGuiFrame extends JFrame {
         btnLimpiarBusqueda.setEnabled(!consultando);
         btnAnterior.setEnabled(!consultando && paginaActual > 1);
         btnSiguiente.setEnabled(!consultando && paginaActual < totalPaginas);
+        btnIrPagina.setEnabled(!consultando);
+        txtPaginaIr.setEnabled(!consultando);
+        cmbOrdenarPor.setEnabled(!consultando);
+        cmbDireccionOrden.setEnabled(!consultando);
         btnAgregarSeleccionado.setEnabled(!consultando);
         txtBusqueda.setEnabled(!consultando);
     }
@@ -904,7 +945,7 @@ public class PadronGuiFrame extends JFrame {
 
         if (cause instanceof IOException) {
             return "Falló la consulta HTTP al backend.\n"
-                    + "El servidor podría estar apagado, o la URL/parámetros de búsqueda podrían ser inválidos.\n\n"
+                    + "El servidor podría estar apagado, o la URL/parámetros podrían ser inválidos.\n\n"
                     + "Detalle técnico: " + detalle;
         }
 
