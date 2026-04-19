@@ -49,7 +49,7 @@ public class RepositorioDistelecTxt implements RepositorioDistelec {
                 mapa.put(codElec, dir);
             }
 
-            System.out.println("✅ Distelec cargado: " + mapa.size() + " registros");
+            System.out.println(" Distelec cargado: " + mapa.size() + " registros");
 
         } catch (IOException e) {
             throw new RuntimeException("Error cargando distelec: " + e.getMessage(), e);

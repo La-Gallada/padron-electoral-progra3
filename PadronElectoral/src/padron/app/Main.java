@@ -11,23 +11,37 @@ import padron.presentacion.tcp.TcpServer;
 public final class Main {
 
     public static void main(String[] args) {
+
+        // Abrir vista
+        Vista vista = new Vista();
+        vista.setVisible(true);
+
         try {
-            // 1) Datos
             RepositorioDistelec repoDistelec = new RepositorioDistelecTxt(
-                    AppConfig.DISTELEC_PATH, AppConfig.DISTELEC_SEPARATOR
+                    AppConfig.DISTELEC_PATH,
+                    AppConfig.TXT_SEPARATOR
             );
-            repoDistelec.cargar(); // carga Map en memoria
+            repoDistelec.cargar();
 
+            // El padrón se trabaja bajo demanda
             RepositorioPadron repoPadron = new RepositorioPadronTxt(
-                    AppConfig.PADRON_PATH, AppConfig.PADRON_SEPARATOR
+                    AppConfig.PADRON_PATH,
+                    AppConfig.TXT_SEPARATOR
             );
 
-            // 2) Lógica (única para TCP y HTTP)
             ServicioPadron servicio = new ServicioPadron(repoPadron, repoDistelec);
 
-            // 3) Servidores
-            TcpServer tcp = new TcpServer(AppConfig.TCP_PORT, AppConfig.TCP_POOL_SIZE, servicio);
-            HttpServerApp http = new HttpServerApp(AppConfig.HTTP_PORT, AppConfig.HTTP_POOL_SIZE, servicio);
+            TcpServer tcp = new TcpServer(
+                    AppConfig.TCP_PORT,
+                    AppConfig.TCP_POOL_SIZE,
+                    servicio
+            );
+
+            HttpServerApp http = new HttpServerApp(
+                    AppConfig.HTTP_PORT,
+                    AppConfig.HTTP_POOL_SIZE,
+                    servicio
+            );
 
             tcp.start();
             http.start();
@@ -37,7 +51,6 @@ public final class Main {
             System.out.println("   HTTP : http://localhost:" + AppConfig.HTTP_PORT);
 
         } catch (Exception ex) {
-            // Si falla el arranque, se muestra error claro
             System.err.println("❌ Error iniciando PadronElectoral: " + ex.getMessage());
             ex.printStackTrace();
         }

@@ -12,6 +12,8 @@ public class PadronPageData {
     private final int tamanoPagina;
     private final int totalResultados;
     private final int totalPaginas;
+    private final String ordenarPor;
+    private final String direccion;
     private final List<PadronRow> resultados;
     private final String errorCodigo;
     private final String errorMensaje;
@@ -23,6 +25,8 @@ public class PadronPageData {
             int tamanoPagina,
             int totalResultados,
             int totalPaginas,
+            String ordenarPor,
+            String direccion,
             List<PadronRow> resultados,
             String errorCodigo,
             String errorMensaje
@@ -33,6 +37,8 @@ public class PadronPageData {
         this.tamanoPagina = tamanoPagina;
         this.totalResultados = totalResultados;
         this.totalPaginas = totalPaginas;
+        this.ordenarPor = ordenarPor;
+        this.direccion = direccion;
         this.resultados = Collections.unmodifiableList(new ArrayList<>(resultados));
         this.errorCodigo = errorCodigo;
         this.errorMensaje = errorMensaje;
@@ -44,6 +50,8 @@ public class PadronPageData {
             int tamanoPagina,
             int totalResultados,
             int totalPaginas,
+            String ordenarPor,
+            String direccion,
             List<PadronRow> resultados
     ) {
         return new PadronPageData(
@@ -53,6 +61,8 @@ public class PadronPageData {
                 tamanoPagina,
                 totalResultados,
                 totalPaginas,
+                ordenarPor == null ? "cedula" : ordenarPor,
+                direccion == null ? "asc" : direccion,
                 resultados == null ? Collections.emptyList() : resultados,
                 null,
                 null
@@ -67,6 +77,8 @@ public class PadronPageData {
                 0,
                 0,
                 0,
+                "cedula",
+                "asc",
                 Collections.emptyList(),
                 codigo,
                 mensaje
@@ -95,6 +107,14 @@ public class PadronPageData {
 
     public int getTotalPaginas() {
         return totalPaginas;
+    }
+
+    public String getOrdenarPor() {
+        return ordenarPor;
+    }
+
+    public String getDireccion() {
+        return direccion;
     }
 
     public List<PadronRow> getResultados() {

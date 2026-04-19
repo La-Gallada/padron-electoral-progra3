@@ -12,8 +12,8 @@ import java.nio.charset.StandardCharsets;
 
 public class HttpPadronClient {
 
-    private static final int CONNECT_TIMEOUT_MS = 5000;
-    private static final int READ_TIMEOUT_MS = 30000;
+    private static final int CONNECT_TIMEOUT_MS = 10000;
+    private static final int READ_TIMEOUT_MS = 180000;
 
     private final String baseUrl;
 
@@ -44,7 +44,7 @@ public class HttpPadronClient {
         return ejecutarGet(endpoint);
     }
 
-    public String explorar(String criterio, int pagina, int tamano, String formato) throws IOException {
+    public String explorar(String criterio, int pagina, int tamano, String formato, String ordenarPor, String direccion) throws IOException {
         String criterioEncoded = URLEncoder.encode(
                 criterio == null ? "" : criterio,
                 StandardCharsets.UTF_8
@@ -53,14 +53,28 @@ public class HttpPadronClient {
                 formato == null ? "json" : formato,
                 StandardCharsets.UTF_8
         );
+        String ordenarPorEncoded = URLEncoder.encode(
+                ordenarPor == null ? "cedula" : ordenarPor,
+                StandardCharsets.UTF_8
+        );
+        String direccionEncoded = URLEncoder.encode(
+                direccion == null ? "asc" : direccion,
+                StandardCharsets.UTF_8
+        );
 
         String endpoint = baseUrl
                 + "/padron/explorar?criterio=" + criterioEncoded
                 + "&pagina=" + pagina
                 + "&tamano=" + tamano
+                + "&ordenarPor=" + ordenarPorEncoded
+                + "&direccion=" + direccionEncoded
                 + "&format=" + formatoEncoded;
 
         return ejecutarGet(endpoint);
+    }
+
+    public String explorar(String criterio, int pagina, int tamano, String formato) throws IOException {
+        return explorar(criterio, pagina, tamano, formato, "cedula", "asc");
     }
 
     private String ejecutarGet(String endpoint) throws IOException {

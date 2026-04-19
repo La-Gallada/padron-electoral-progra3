@@ -15,4 +15,6 @@ public interface RepositorioPadron {
     List<Persona> buscarPorNombrePaginado(String termino, int offset, int limit);
 
     int contarPorNombre(String termino);
+
+    List<Persona> explorarPaginado(String termino, int offset, int limit, String ordenarPor, String direccion);
 }
