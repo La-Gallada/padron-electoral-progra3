@@ -2,6 +2,14 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Users/Kyrou/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/presentacion/gui/PdfExportService.java</file>
+            <file>file:/C:/Users/Kyrou/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/presentacion/gui/resources/Logo128.png</file>
+            <file>file:/C:/Users/Kyrou/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/presentacion/gui/resources/Logo16.png</file>
+            <file>file:/C:/Users/Kyrou/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/presentacion/gui/resources/Logo32.png</file>
+            <file>file:/C:/Users/Kyrou/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/presentacion/gui/resources/Logo64.png</file>
+            <file>file:/C:/Users/Kyrou/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/app/Main.java</file>
+            <file>file:/C:/Users/Kyrou/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/Vista/Vista.java</file>
+        </group>
     </open-files>
 </project-private>
