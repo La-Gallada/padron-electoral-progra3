@@ -2,28 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/C:/Users/Usuario/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/presentacion/tcp/TcpClientHandler.java</file>
-            <file>file:/C:/Users/Usuario/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/presentacion/http/PadronHttpHandler.java</file>
-            <file>file:/C:/Users/Usuario/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/presentacion/tcp/TcpParseResult.java</file>
-            <file>file:/C:/Users/Usuario/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/presentacion/tcp/TcpRequestParser.java</file>
-            <file>file:/C:/Users/Usuario/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/util/Serializador.java</file>
-            <file>file:/C:/Users/Usuario/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/util/TestSerializacion.java</file>
-            <file>file:/C:/Users/Usuario/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/app/Main.java</file>
-            <file>file:/C:/Users/Usuario/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/app/AppConfig.java</file>
-            <file>file:/C:/Users/Usuario/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/datos/RepositorioDistelec.java</file>
-            <file>file:/C:/Users/Usuario/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/datos/RepositorioDistelecTxt.java</file>
-            <file>file:/C:/Users/Usuario/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/datos/RepositorioPadron.java</file>
-            <file>file:/C:/Users/Usuario/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/datos/RepositorioPadronTxt.java</file>
-            <file>file:/C:/Users/Usuario/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/dto/DireccionDTO.java</file>
-            <file>file:/C:/Users/Usuario/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/dto/ErrorRespuesta.java</file>
-            <file>file:/C:/Users/Usuario/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/dto/FormatoSalida.java</file>
-            <file>file:/C:/Users/Usuario/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/dto/PersonaDTO.java</file>
-            <file>file:/C:/Users/Usuario/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/dto/RespuestaPadron.java</file>
-            <file>file:/C:/Users/Usuario/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/dto/SolicitudPadron.java</file>
-            <file>file:/C:/Users/Usuario/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/entidades/Direccion.java</file>
-            <file>file:/C:/Users/Usuario/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/entidades/Persona.java</file>
-            <file>file:/C:/Users/Usuario/Documents/GitHub/padron-electoral-progra3/PadronElectoral/src/padron/logica/ServicioPadron.java</file>
-        </group>
+        <group/>
     </open-files>
 </project-private>

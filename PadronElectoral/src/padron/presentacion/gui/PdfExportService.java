@@ -1,5 +1,6 @@
 package padron.presentacion.gui;
 
+import com.itextpdf.text.Image;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -226,27 +227,49 @@ public class PdfExportService {
         private static final BaseColor CR_BLANC = BaseColor.WHITE;
 
         @Override
-        public void onEndPage(PdfWriter writer, Document document) {
-            PdfContentByte cb = writer.getDirectContent();
-            Rectangle pageSize = document.getPageSize();
+public void onEndPage(PdfWriter writer, Document document) {
+    PdfContentByte cb = writer.getDirectContent();
+    Rectangle pageSize = document.getPageSize();
 
-            float pageWidth = pageSize.getWidth();
-            float top       = pageSize.getTop();
-            float bottom    = pageSize.getBottom();
+    float pageWidth  = pageSize.getWidth();
+    float top        = pageSize.getTop();
+    float bottom     = pageSize.getBottom();
 
-            // ── Bandera en la parte superior (altura total 12pt) ──────────
-            float alturaTotal = 12f;
-            float alturaUnidad = alturaTotal / 6f;
+    // ── Bandera en la parte superior (altura total 12pt) ──────────
+    float alturaTotal  = 12f;
+    float alturaUnidad = alturaTotal / 6f;
 
-            dibujarFranja(cb, 0, top - alturaUnidad * 1, pageWidth, alturaUnidad * 1, CR_AZUL);  // azul
-            dibujarFranja(cb, 0, top - alturaUnidad * 2, pageWidth, alturaUnidad * 1, CR_BLANC); // blanco
-            dibujarFranja(cb, 0, top - alturaUnidad * 4, pageWidth, alturaUnidad * 2, CR_ROJO);  // rojo (doble)
-            dibujarFranja(cb, 0, top - alturaUnidad * 5, pageWidth, alturaUnidad * 1, CR_BLANC); // blanco
-            dibujarFranja(cb, 0, top - alturaUnidad * 6, pageWidth, alturaUnidad * 1, CR_AZUL);  // azul
+    dibujarFranja(cb, 0, top - alturaUnidad * 1, pageWidth, alturaUnidad * 1, CR_AZUL);
+    dibujarFranja(cb, 0, top - alturaUnidad * 2, pageWidth, alturaUnidad * 1, CR_BLANC);
+    dibujarFranja(cb, 0, top - alturaUnidad * 4, pageWidth, alturaUnidad * 2, CR_ROJO);
+    dibujarFranja(cb, 0, top - alturaUnidad * 5, pageWidth, alturaUnidad * 1, CR_BLANC);
+    dibujarFranja(cb, 0, top - alturaUnidad * 6, pageWidth, alturaUnidad * 1, CR_AZUL);
 
-            // ── Línea delgada roja en el footer ───────────────────────────
-            dibujarFranja(cb, 0, bottom, pageWidth, 4f, CR_ROJO);
+    // ── Línea delgada roja en el footer ───────────────────────────
+    dibujarFranja(cb, 0, bottom, pageWidth, 4f, CR_ROJO);
+
+    // ── Logo en esquina superior derecha ──────────────────────────
+    try {
+        java.io.InputStream is = getClass().getResourceAsStream(
+                "/padron/presentacion/gui/resources/Logo128.png");
+        if (is != null) {
+            Image logo = Image.getInstance(is.readAllBytes());
+            float logoAlto  = 50f;
+            float logoAncho = logo.getWidth() * (logoAlto / logo.getHeight());
+            float margenDer = 30f;
+            float margenTop = 8f;
+            logo.setAbsolutePosition(
+                    pageWidth - logoAncho - margenDer,
+                    top - alturaTotal - logoAlto - margenTop
+            );
+            logo.scaleToFit(logoAncho, logoAlto);
+            cb.addImage(logo);
         }
+    } catch (Exception e) {
+        // Si el logo no carga, el PDF se genera igual sin él
+        System.err.println("Logo no encontrado: " + e.getMessage());
+    }
+}
 
         private void dibujarFranja(PdfContentByte cb, float x, float y,
                                    float ancho, float alto, BaseColor color) {
